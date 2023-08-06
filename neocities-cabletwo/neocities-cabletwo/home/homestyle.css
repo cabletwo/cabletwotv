@@ -1,0 +1,615 @@
+/* body, background */
+
+
+body {	
+		background-image:url("https://64.media.tumblr.com/e946a1e0e45d11a29b7125e7e5771d02/9dbf12fa69ead32b-34/s2048x3072/3a81e4db581298b5b628c860b8d34792b488e325.pnj");
+		height: 100%;
+		margin: 0;
+		background-size:cover;
+		background-attachment: fixed;
+		background-color:  blue;
+	}
+
+body ul, li {
+	padding: 0;
+}
+
+
+a:link{color:aqua;}
+    a:visited{color:aqua;}
+    a:hover{color:aqua;}
+    #footdivider{width:600px;height:30px;background-image:url('https://web.archive.org/web/20090902000407/http://www.geocities.com/rangers_ranch/Swimmer_border2.gif');}
+    @media only screen and (max-width: 600px) {
+   #footdivider{display:none;}
+  }
+
+}
+
+/* hashlinks */
+
+html {
+	scroll-behavior: smooth;
+}
+
+.headerbox h1::before { /* #Home */ 
+  display: block; 
+  content: " "; 
+  margin-top: -150px; 
+  height: 150px; 
+  visibility: hidden; 
+  pointer-events: none;
+}
+
+.newsbox h1::before { /* #News */
+  display: block; 
+  content: " "; 
+  margin-top: -150px; 
+  height: 150px; 
+  visibility: hidden; 
+  pointer-events: none;
+}
+
+.schedulebox h1::before { /* #Shows */
+  display: block; 
+  content: " "; 
+  margin-top: -150px; 
+  height: 150px; 
+  visibility: hidden; 
+  pointer-events: none;
+}
+
+.newsbox h1::before { /* #Contact */
+  display: block; 
+  content: " "; 
+  margin-top: -150px; 
+  height: 150px; 
+  visibility: hidden; 
+  pointer-events: none;
+}
+
+.newsbox h1::before { /* #Pitch */
+  display: block; 
+  content: " "; 
+  margin-top: -150px; 
+  height: 150px; 
+  visibility: hidden; 
+  pointer-events: none;
+}
+
+.schedulebox h1::before { /* #Shop */
+  display: block; 
+  content: " "; 
+  margin-top: -150px; 
+  height: 150px; 
+  visibility: hidden; 
+  pointer-events: none;
+}
+
+
+/* page content */
+
+.parent { /* flexbox parent */
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	gap: 30px;
+	margin:  auto;
+	max-width: 100%;
+	height: auto;
+}
+
+.child1 img {
+display: block;
+margin:  auto;
+max-width: 100%;
+height: auto;
+}
+
+.child1 {
+	flex-flow: column;
+	order: 1;
+	justify-content: center;
+}
+
+.child2 {
+	flex-flow: column;
+	order: 2;
+}
+
+.headerbox { /* headerbox */
+	order: 1;
+	box-sizing: content-box;
+	background: linear-gradient(90deg,
+		rgb(0, 0, 80, 0.8),
+		rgba(0,0,0,0.8) 70%);
+	width: 300px;
+   	border-radius:10px;
+   	box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+	padding-bottom: 10px;
+	background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
+
+}
+
+	.headerbox h1 { /* text in first box */
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		font-style: italic;
+		color: white;
+		font-size: 250%;
+		text-align: center;
+}
+
+.spacer { /* between the headerboxes */
+	margin: 30px;
+}
+
+
+	.headerbox p { /* text in second box */
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		color: white;
+		padding: 2rem 2rem 2rem;
+
+	}
+
+	.headerbox mark {
+		font-weight: 500;
+		background-image: linear-gradient(45deg,
+			red,
+		  rgb(255, 95, 0, 1) 15%,
+	    rgba(255, 154, 0, 1) 50%,
+	    rgb(214, 242.25, 0, 1) 100%);
+		color: black;
+		padding-left: 2px;
+		padding-right: 3px;
+	}
+
+.newsbox { /* news panel */
+	box-sizing: border-box;
+	background: linear-gradient(90deg,
+		rgb(0, 0, 80, 0.8),
+		rgba(0,0,0,0.8) 70%);
+	width:  656px;
+   border-radius:10px;
+  box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+  padding: 2rem 3rem;
+  background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
+}
+
+	.newsbox h1 { /* title */
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		color: white;
+		font-size: 175%;
+		padding-bottom: 2px;
+		border-bottom: 1px double;
+		border-image: linear-gradient(90deg,
+			rgba(255, 0, 0, 1) 0%,
+	        rgba(255, 154, 0, 1) 10%,
+	        rgba(208, 222, 33, 1) 20%,
+	        rgba(79, 220, 74, 1) 30%,
+	        rgba(63, 218, 216, 1) 40%,
+	        rgba(47, 201, 226, 1) 50%,
+	        rgba(28, 127, 238, 1) 60%,
+	        rgba(95, 21, 242, 1) 70%,
+	        rgba(186, 12, 248, 1) 80%,
+	        rgba(251, 7, 217, 1) 90%,
+	        rgba(255, 0, 0, 1) 100%) 10;
+}
+
+	.newsbox h2 {
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		color: white;
+		font-size:  medium;
+	}
+	.newsbox img {
+		width:  100%;
+	}
+
+	.newsbox p {
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		font-size: normal;
+
+		color: white;
+	}
+
+	.newsbox a {
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		font-size: normal;
+		background-color: transparent;
+		color: lightblue;
+		padding: 2px 3px;
+	}
+
+	
+
+	.newsbox mark {
+		font-weight: 500;
+		background-image: linear-gradient(45deg,
+			red,
+		  rgb(255, 95, 0, 1) 15%,
+	    rgba(255, 154, 0, 1) 50%,
+	    rgb(214, 242.25, 0, 1) 100%);
+		color: black;
+		padding-left: 2px;
+		padding-right: 3px;
+	}
+
+.schedulebox { /* front page schedule */
+	order:  2;
+	box-sizing: content-box;
+	background: linear-gradient(90deg,
+		rgb(0, 0, 80, 0.8),
+		rgba(0,0,0,0.8) 70%);
+	width: 300px;
+   	 border-radius:10px;
+   	box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+   	background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
+}
+
+.schedule { /* padding for schedulebox text */
+	padding:  2em;
+}
+
+	.schedulebox h1 { /* title */
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		color: white;
+		font-size: 175%;
+		padding-bottom: 2px;
+		border-bottom: 1px double;
+		border-image: linear-gradient(90deg,
+			rgba(255, 0, 0, 1) 0%,
+	        rgba(255, 154, 0, 1) 10%,
+	        rgba(208, 222, 33, 1) 20%,
+	        rgba(79, 220, 74, 1) 30%,
+	        rgba(63, 218, 216, 1) 40%,
+	        rgba(47, 201, 226, 1) 50%,
+	        rgba(28, 127, 238, 1) 60%,
+	        rgba(95, 21, 242, 1) 70%,
+	        rgba(186, 12, 248, 1) 80%,
+	        rgba(251, 7, 217, 1) 90%,
+	        rgba(255, 0, 0, 1) 100%) 10;
+	        
+
+}
+
+	.schedulebox h2 { /* day of week */
+		font-family: 'Syne Mono Ital', monospace;
+		font-weight: 1,400;
+		text-align: center;
+		color: cyan;
+		font-size: 125%;
+		padding: 0.5em;
+		width: 6em;
+		border-bottom: 1px double lightgrey;
+}
+
+	.schedulebox p {
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		font-size: small;
+		font-style: italic;
+		color: white;
+		text-align: right;
+	}
+
+	.schedulebox ul {
+		list-style-type: none;
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 6px;
+	}
+
+	.schedulebox li { /* textbox for show title */
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		text-align: right;
+		color: white;
+		border-bottom: 1px double darkred;
+		border-right: 1px double darkred;
+		padding: 1em;
+		background-color: rgba(48,48,48,0.85);
+	}
+
+	.schedulebox a {
+		font-family: 'Syne Mono', monospace;
+		font-weight: 400;
+		font-size: normal;
+		color: lightblue;
+		text-align: center;
+	}
+
+	
+
+
+.vidbox { /* arby's youtube video */
+	order: 2;
+    position: relative;
+    height: 350px;
+    width: 640px;
+    max-width: 100%;
+    overflow: hidden;
+     border-radius:10px;
+    box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+    background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
+  
+}
+
+.vidbox2 { /* arby's youtube video */
+    position: relative;
+    height: auto;
+    width: 300px;
+    max-width: 100%;
+    overflow: hidden;
+     border-radius:10px;
+    box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
+}
+
+
+.form-group input {
+	font-family: 'Syne Mono', monospace;
+	background: black;
+	color: white;
+	margin-bottom: 4%;
+	margin-left: 5%;
+	width: 300px;
+	padding: 1%;
+}
+
+.form-group textarea {
+	font-family: 'Syne Mono', monospace;
+	background: black;
+	color: white;
+	padding: 1%;
+	margin-bottom: 4%;
+	margin-left: 5%;
+	width: 450px;
+}
+
+.form-group p {
+	font-family: 'Syne Mono', monospace;
+	color: white;
+}
+
+
+
+/* responsive navigation bar */
+
+.navbar {
+
+}	
+
+.topnavbg {
+  background-color: black;
+  background-image:url('https://sadhost.neocities.org/images/tiles/starsforever.gif');
+  width: 100%; /*anything less than 100%*/
+  height:48px;
+  margin:auto;
+  
+}
+
+
+.topnav {
+  background-color: transparent;
+  width:710px; /*anything less than 100%*/
+  height:48px;
+  margin:auto;
+  
+}
+
+.topnav img {
+	float: left;
+	height: 48px;
+	min-width: 48px;
+}
+
+.topnav a.one {
+	float: left;
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-family: 'Syne Mono', monotype;
+	font-size: 15px;
+	background-color: black;
+}
+
+.topnav a.one:hover {
+
+	color: orange;
+}
+
+.topnav a.active {
+	float: right;
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-family: 'Syne Mono', monotype;
+	font-size: 15px;
+	background-color: rgba(18,19,193,1);
+	color: white;
+}
+
+.topnav .icon {
+	display: none;
+	float: left;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-family: 'Syne Mono', monotype;
+	font-size: 15px;
+	background-color: black;
+}
+
+
+/* rainbow ticker */
+
+#marquee {
+	background-image: linear-gradient(37deg,
+        rgba(255, 0, 0, 1) 0%,
+        rgba(255, 154, 0, 1) 10%,
+        rgba(208, 222, 33, 1) 20%,
+        rgba(79, 220, 74, 1) 30%,
+        rgba(63, 218, 216, 1) 40%,
+        rgba(47, 201, 226, 1) 50%,
+        rgba(28, 127, 238, 1) 60%,
+        rgba(95, 21, 242, 1) 70%,
+        rgba(186, 12, 248, 1) 80%,
+        rgba(251, 7, 217, 1) 90%,
+        rgba(255, 0, 0, 1) 100%);
+}
+
+.ticker {
+	
+	font-size: 14px;
+	font-family: 'Syne Mono', serif;
+	height:15px; 
+	overflow: hidden;
+	position: relative;
+	line-height:14px;
+	bottom:0;
+}
+
+.ticker p {
+	color: black;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	text-align: center;
+/* Starting position */
+	-moz-transform:translateX(100%);
+	-webkit-transform:translateX(100%); 
+	transform:translateX(100%);
+/* Apply animation to this element */ 
+	-moz-animation: scroll-left 18s linear infinite;
+	-webkit-animation: scroll-left 18s linear infinite;
+	animation: scroll-left 18s linear infinite;
+}
+/* Move it (define the animation) */
+@-moz-keyframes scroll-left {
+	0% { -moz-transform: translateX(100%); }
+	100% { -moz-transform: translateX(-100%); }
+}
+@-webkit-keyframes scroll-left {
+	0% { -webkit-transform: translateX(100%); }
+	100% { -webkit-transform: translateX(-100%); }
+}
+@keyframes scroll-left {
+	0% { 
+		-moz-transform: translateX(100%); /* Browser bug fix */
+		-webkit-transform: translateX(100%); /* Browser bug fix */
+		transform: translateX(100%); 
+}
+	100% { 
+		-moz-transform: translateX(-100%); /* Browser bug fix */
+		-webkit-transform: translateX(-100%); /* Browser bug fix */
+		transform: translateX(-100%); 
+}
+}
+
+@keyframes scroll {
+	from {left: 0px; }
+	to {left: 200px; }
+}
+
+
+
+
+/* responsive navbars */
+
+@media screen and (max-width: 1200px) {
+	.background {
+	width: 720px;
+	}
+}
+
+@media screen and (max-width: 768px) {
+  .topnav{
+    width:100%;
+  }
+	.topnav a.one:not(:first-child) {
+		display: none;
+	}
+	.topnav a.icon {
+		float: right;
+		display: block;
+	}
+	.background {
+	width: 90%;
+	margin: auto;
+	}
+}
+
+
+@media screen and (max-width: 768px) {
+	.topnav.responsive {position: relative;}
+	.topnav.responsive .icon {
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+	.topnav.responsive a.one {
+		float: none;
+		display: block;
+		text-align: left;
+	}
+	.topnav.responsive a.active {
+		float: none;
+		display: block;
+		text-align: left;
+	}
+	.ticker p {
+		-moz-animation: scroll-left 10s linear infinite;
+		-webkit-animation: scroll-left 10s linear infinite;
+		animation: scroll-left 10s linear infinite;
+	}
+}
+    
+
+
+/* responsive body */
+
+@media screen and (max-width: 1024px) {
+	.vidbox {
+		width: 300px;
+		height: 169px;
+	}
+
+	.newsbox {
+		width: 316px;
+	}
+
+	.form-group textarea {
+		width: 220px;
+				margin: auto;
+	}
+	.form-group input {
+		width: 220px;
+				margin: auto;
+	}
+}
+
+
+/* responsive navbar */
+
+@media screen and (max-width: 500px) {
+	.topnav a.one:not(:first-child) {
+		display: none;
+	}
+	.topnav a.icon {
+		float: right;
+		display: block;
+	}
+
+
+}

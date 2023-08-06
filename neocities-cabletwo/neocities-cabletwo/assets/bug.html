@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+width:750px;
+height:250px;
+position:relative;
+background:transparent;
+}
+#logo{
+height:122px;
+width:122px;
+background-image:url('https://64.media.tumblr.com/a4ebdb3e5c973d4ed2488f0a6786449d/1d1ee6a0fbd550d9-9d/s500x750/a20aea38eb6c3fcb61a4587db6929d52616f1998.pnj');
+background-size:cover;
+left:23px;
+bottom:22px;
+position:absolute;
+z-index:100;}
+
+#flyout{
+  height:250px;
+  width:750px;
+  left:100px;
+  overflow:hidden;
+  background-image:url('https://cabletwo.neocities.org/assets/tickerbg.png');
+  background-size:cover;
+  animation-name: flyani;
+  animation-duration: 180s;
+  animation-timing-function: linear;
+  animation-delay: 0s;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  position:relative;
+  }
+  
+  @keyframes flyani {
+    0% {left: -750px;}
+    2% {left: 0px;}
+    5% {left: 0px;}
+    6% {left: -750px;}
+    100% {left: -750px;}
+}
+</style>
+  </head>
+  <body>
+    <div id="logo"></div>
+    <div id="flyout"></div>   
+  </body>
+</html>
