@@ -1,2 +1,2 @@
 # its-cable-two
-primary website for cable two
+welcome to Cable Two, a collaborative television network exploring the possibilities of livestreaming as a medium. Cable Two is where the past merges with innovation, and where the spirit of collaboration fuels the excitement of tomorrow. Cable Two is devoted to the ideals, the visions, and the hard work that shapes our community... with the aspiration that it becomes a template for others, and a world of its own without boundaries. Cable Two is a promise and a threat.
