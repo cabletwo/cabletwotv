@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <style>
+    body{
+    width:1920px;
+    height:200px;
+    background-color:transparent;
+    color:black;
+    }
+    
+    @font-face {
+    font-family: 'Frutiger';
+    src: url(https://fantasyflight.neocities.org/Frutiger.ttf);
+}
+    #container{
+      width:100%;
+    height:100%;
+    position:relative;
+    background-size:cover;
+    overflow:hidden;
+    font-size:17px;
+    font-family:'Frutiger';}
+    
+    #picframe{
+      bottom:-20px;
+     right:30px;
+      position:absolute;
+   }
+
+    
+    #cablethird{
+      width:100%;
+      bottom:5px;
+      height:60px;
+      background-color:#e0e0e0;
+      color:black;
+      position:absolute;
+      
+    }
+    #cablethirdtext{
+      width:100%;
+      bottom:0px;
+      height:60px;
+   color:black;
+   line-height:60px;
+      position:relative;
+    animation: marquee 15s linear infinite;
+  display: inline-block;
+  padding-right: 10px;
+  font-size:25px;
+  font-family:'Helvetica';
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(100%);
+  }
+  to { 
+    transform: translateX(-100%);
+  }
+}
+
+#fourthtitle{
+  height:60px;
+  padding-right:20px;
+  padding-left:80px;
+  bottom:5px;
+  background-color:white;
+  width:100px;
+  right:0px;
+  position:absolute;
+  line-height:60px;
+  text-shadow:0px 0px 10px white;
+  color:black;
+  font-size:25px;
+  font-family:'Frutiger';
+}
+
+#fifthtitle{
+  height:60px;
+  width:215px;
+  bottom:5px;
+  background-color:white;
+  position:absolute;
+  line-height:60px;
+  text-shadow:0px 0px 10px white;
+  color:black;
+  font-size:20px;
+   font-family:'Frutiger';
+}
+    #rainbowgrad{
+  height:5px;
+  width:100%;
+  bottom:0;
+  background-color:black;
+  position:absolute;
+  left:0;
+  z-index:10000000;
+  background: linear-gradient(
+        90deg, rgba(220,34,47,1) 0%, rgba(46,220,34,1) 50%, rgba(33,46,219,1) 100%
+    );
+}
+      
+      #C2logo{
+     bottom:-15px;
+     left:30px;
+      position:absolute;}
+      
+      #blinking {
+        z-index:1000;
+        color:red;
+  -webkit-animation: 1s blink ease infinite;
+  -moz-animation: 1s blink ease infinite;
+  -ms-animation: 1s blink ease infinite;
+  -o-animation: 1s blink ease infinite;
+  animation: 1s blink ease infinite;
+  
+}
+
+@keyframes "blink" {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes blink {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes "blink" {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes "blink" {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes "blink" {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+    </style>
+  </head>
+  
+  <body>
+    <div id="container">
+    <div id="rainbowgrad"></div>
+    <div id="cablethird">
+    <div id="cablethirdtext">You're watching FROM TWO 2 GAJILLION: A Panel Retrospective of Cable Two and Future of Three sponsored by Three's Company and Gajillion. </div>
+   </div>
+    <div id="fourthtitle">
+    <div id="picframe"><img src="https://cabletwo.net/assets/200pm%20(5)%20(1).png" height="55px"></div> </div>   
+    <div id="fifthtitle"><center><div id="C2logo"><img src="https://cabletwo.net/assets/cable_iii_logo%20(1).png" width="150px"></div></center></div>
+    
+    </div>
+    
+  
+  </body>
+</html>

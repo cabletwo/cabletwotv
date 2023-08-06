@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Syne Mono' rel='stylesheet'>
+    <style>
+    body{
+    width:1920px;
+    height:200px;
+    background-color:transparent;
+    }
+    
+    @font-face {
+    font-family: 'Frutiger';
+    src: url(https://fantasyflight.neocities.org/Frutiger.ttf);
+}
+    #container{
+      width:100%;
+    height:100%;
+    position:relative;
+    background-size:cover;
+    overflow:hidden;
+    font-size:17px;
+    font-family:'Frutiger';}
+    
+    #picframe{
+      width:40px;
+    height:40px;
+    position:relative;
+    background-size:cover;
+    top:-55px; left:-65px;
+    overflow:hidden;
+    border:5px inset white;
+background-image:url('https://64.media.tumblr.com/accc2a68865a5dbb97ad4939cbde03d5/cbaff51280aa2504-9d/s540x810/9ed5a4ba882baa6d0980772cbfa4914a705eb74d.pnj');}
+
+    
+    #cablethird{
+      width:100%;
+      bottom:5px;
+      height:60px;
+      background-color:#333333;
+      background-image:linear-gradient(#101010,	#383838);
+      position:absolute;
+      box-shadow: 0px 0px 50px blue;
+      
+    }
+    #cablethirdtext{
+      width:100%;
+      bottom:0px;
+      height:60px;
+   color:white;
+   line-height:60px;
+      position:relative;
+    animation: marquee 15s linear infinite;
+  display: inline-block;
+  padding-right: 10px;
+  font-size:25px;
+  font-family:'Syne Mono';
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(100%);
+  }
+  to { 
+    transform: translateX(-100%);
+  }
+}
+
+#fourthtitle{
+  height:60px;
+  padding-right:20px;
+  padding-left:80px;
+  bottom:5px;
+  background-color:blue;
+  right:0px;
+  position:absolute;
+  background-image: linear-gradient(white,grey);
+  line-height:60px;
+  text-shadow:0px 0px 10px white;
+  color:black;
+  font-size:25px;
+  font-family:'Frutiger';
+}
+
+#fifthtitle{
+  height:60px;
+  width:150px;
+  bottom:5px;
+  background-color:black;
+  background-image:linear-gradient(black,#181818);
+  left:0;
+  position:absolute;
+  line-height:60px;
+  text-shadow:0px 0px 10px white;
+  color:black;
+  font-size:20px;
+   font-family:'Frutiger';
+}
+    #rainbowgrad{
+  height:5px;
+  width:100%;
+  bottom:0;
+  background-color:black;
+  position:absolute;
+  left:0;
+  z-index:10000000;
+  background: linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 1) 0%,
+        rgba(255, 154, 0, 1) 10%,
+        rgba(208, 222, 33, 1) 20%,
+        rgba(79, 220, 74, 1) 30%,
+        rgba(63, 218, 216, 1) 40%,
+        rgba(47, 201, 226, 1) 50%,
+        rgba(28, 127, 238, 1) 60%,
+        rgba(95, 21, 242, 1) 70%,
+        rgba(186, 12, 248, 1) 80%,
+        rgba(251, 7, 217, 1) 90%,
+        rgba(255, 0, 0, 1) 100%
+    );
+}
+      
+      #C2logo{
+     bottom:-15px;
+     left:25px;
+      position:absolute;}
+      
+      #blinking {
+        z-index:1000;
+        color:red;
+  -webkit-animation: 1s blink ease infinite;
+  -moz-animation: 1s blink ease infinite;
+  -ms-animation: 1s blink ease infinite;
+  -o-animation: 1s blink ease infinite;
+  animation: 1s blink ease infinite;
+  
+}
+
+@keyframes "blink" {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes blink {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes "blink" {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes "blink" {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes "blink" {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+    </style>
+  </head>
+  
+  <body>
+    <div id="container">
+    <div id="rainbowgrad"></div>
+    <div id="cablethird">
+    <div id="cablethirdtext">You're watching Shapes: One Day on Cable Two. Up next: T.G.I.S.</div>
+   </div>
+    <div id="fourthtitle">
+    <center><b>Shapes</b></center><div id="picframe"></div></div>
+    <div id="fifthtitle"><center><div id="C2logo"><img src="https://64.media.tumblr.com/a4ebdb3e5c973d4ed2488f0a6786449d/1d1ee6a0fbd550d9-9d/s500x750/a20aea38eb6c3fcb61a4587db6929d52616f1998.pnj" width="100px"></div></center></div>
+    
+    </div>
+  </body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,400&display=swap">
+        <title>endcard</title>
+        <style>
+            body {
+                margin: 0 auto;
+            }
+
+            #tv {
+                height: 720px;
+                width: 1280px;
+                background-color: blue;
+                background-image: url('https://64.media.tumblr.com/0137f97fc2e3ac66f8e9a7e0905811e3/8bc9aa16b9172110-ff/s540x810/8a61bc93ec3a5e9341ad364dcead768a7b2381be.pnj');
+                background-size: cover;
+                position: relative;
+                overflow: hidden;
+                margin: 0 auto;
+                z-index: -2;
+            }
+
+            #cablethird {
+                width: 100%;
+                bottom: 0px;
+                height: 45px;
+                background-color: #333333;
+                position: absolute;
+                background-image: url('https://sadhost.neocities.org/images/tiles/starsforever.gif');
+            }
+
+            .cablethirdtext {
+                width: auto;
+                bottom: 0px;
+                height: 45px;
+                color: white;
+                line-height: 45px;
+                position: relative;
+                animation: marquee 15s linear infinite;
+                display: inline-block;
+                padding-right: 10px;
+                font-size: 20px;
+                font-family: 'Syne Mono';
+                z-index: 10000;
+            }
+
+            @keyframes marquee {
+                from {
+                    transform: translateX(150%);
+                }
+
+                to {
+                    transform: translateX(-100%);
+                }
+            }
+
+            #sidebar {
+                height: 700px;
+                bottom: 0px;
+                margin-top: 0px;
+                width: 200px;
+                right: 0px;
+                background-image: url('https://64.media.tumblr.com/8296777e07a29766c7ce88d026607223/3f9104eaf1e4da94-72/s500x750/1bb92cc4dbae7b12dd337f3c3d567c312320749a.png');
+                background-color: transparent;
+                background-size: contain;
+                color: white;
+                text-shadow: 0px 0px 10px darkblue;
+                font-family: 'Syne Mono';
+                text-align: center;
+                padding-top: 10px;
+                z-index: 1000;
+                box-shadow: 0px 0px 5px darkblue;
+            }
+
+            .boxys {
+                width: 100%;
+                height: 40px;
+                background-color: red;
+                color: white;
+                font-family: Gill Sans;
+                padding: 5px;
+                box-shadow: 0px 0px 5px darkblue;
+                border-radius: 0px 7px 7px 0px;
+                text-align: left;
+                text-shadow: 1px 1px 3px darkblue;
+                line-height: 40px;
+                font-size: 20px;
+            }
+
+            .item-1,
+            .item-2,
+            .item-3 {
+                position: absolute;
+                display: block;
+                top: 5em;
+                color: white;
+                width: 70%;
+                text-shadow: 0px 0px 10px darkblue;
+                font-size: 2em;
+                font-family: 'Syne Mono';
+                animation-duration: 45s;
+                animation-timing-function: ease-in-out;
+                animation-iteration-count: infinite;
+                z-index: -1;
+            }
+
+            .item-1 {
+                animation-name: anim-1;
+            }
+
+            .item-2 {
+                animation-name: anim-2;
+            }
+
+            .item-3 {
+                animation-name: anim-3;
+            }
+
+            @keyframes anim-1 {
+
+                0%,
+                8.3% {
+                    left: -100%;
+                    opacity: 0;
+                }
+
+                8.3%,
+                25% {
+                    left: 25%;
+                    opacity: 1;
+                }
+
+                33.33%,
+                100% {
+                    left: 110%;
+                    opacity: 0;
+                }
+            }
+
+            @keyframes anim-2 {
+
+                0%,
+                33.33% {
+                    left: -100%;
+                    opacity: 0;
+                }
+
+                41.63%,
+                58.29% {
+                    left: 25%;
+                    opacity: 1;
+                }
+
+                66.66%,
+                100% {
+                    left: 110%;
+                    opacity: 0;
+                }
+            }
+
+            @keyframes anim-3 {
+
+                0%,
+                66.66% {
+                    left: -100%;
+                    opacity: 0;
+                }
+
+                74.96%,
+                91.62% {
+                    left: 25%;
+                    opacity: 1;
+                }
+
+                100% {
+                    left: 110%;
+                    opacity: 0;
+                }
+            }
+
+            #tv2 {
+                height: 720px;
+                width: 1280px;
+                background-color: blue;
+                background-image: url('https://data.whicdn.com/images/306493128/original.gif');
+                background-size: cover;
+                position: relative;
+                overflow: hidden;
+                margin: 0 auto;
+            }
+        </style>
+        <script>
+            //cable time clock
+            function dateToText(date) {
+                var hours = date.getHours()
+                var minutes = date.getMinutes();
+                if (minutes < 10) minutes = '0' + minutes;
+                if (hours < 10) hours = '0' + hours;
+                return hours + ":" + minutes; // + ":" + seconds;
+            }
+
+            function updateClocks() {
+                for (var i = 0; i < window.arrClocks.length; i++) {
+                    var clock = window.arrClocks[i];
+                    var offset = window.arrOffsets[i];
+                    clock.innerHTML = dateToText(new Date(new Date().getTime() + offset));
+                }
+            }
+
+            function startClocks() {
+                clockElements = document.getElementsByClassName('clock');
+                window.arrClocks = []
+                window.arrOffsets = [];
+                var j = 0;
+                for (var i = 0; i < clockElements.length; i++) {
+                    el = clockElements[i];
+                    timezone = parseInt(el.getAttribute('timezone'));
+                    if (!isNaN(timezone)) {
+                        var tzDifference = timezone * 60 + (new Date()).getTimezoneOffset();
+                        var offset = tzDifference * 60 * 1000;
+                        window.arrClocks.push(el);
+                        window.arrOffsets.push(offset);
+                    }
+                }
+                updateClocks();
+                clockID = setInterval(updateClocks, 1000);
+            }
+            setTimeout(startClocks, 100);
+        </script>
+    </head>
+    <body>
+        <script>
+            $('#tv').on('click', function(e) {
+                $(this).css({
+                    width: "100%",
+                    height: "100%",
+                    margin: "0",
+                    border: "none"
+                });
+            });
+        </script>
+        <div id="tv">
+            <p class="item-1">
+                <b>Welcome! You're watching Cable Two</b>
+                <br> A network made by people like you, working together to explore the possibilities of live video as a medium. <br>
+                <br> Want to join? All you have to do is say "hi." Visit cabletwo.net to learn more.
+            </p>
+            <p class="item-2">
+                <b>This week on Cable Two:</b>
+                <br>
+                <b>Monday:</b> The Anemoia Hour 12pm <br>
+                <b>Tuesday:</b> F.M.V. 4pm | Link Cable Highlights Fantasy Flight 8pm <br>
+                <b>Wednesday:</b> Warp Zone 5pm <br>
+                <b>Thursday:</b> Empty Jar 8:20pm | The Long Haul 11pm <br>
+                <b>Friday:</b> The Anemoia Hour 12pm | Trina's World 8pm <br>
+                <b>Sunday:</b> Warp Zone 5pm | Cable Hours 10pm
+            </p>
+            <p class="item-3">
+                <b>Want to pitch a show to Cable Two?</b>
+                <br> Anyone can do it in three easy steps: <br>
+                <b>1. Visit cabletwo.net/pitch <br> 2. Fill out the form <br> 3. Wait for a response <br>
+                </b> Join our discord! Once your show is approved, <br> Pick a date and time and you're good to go. <br> cable two is 4 u
+            </p>
+            <div id="sidebar">
+                <img src="https://64.media.tumblr.com/f32e5bea1851ef9050be6a148f6bbf91/d2afbb47bab2aae0-09/s400x600/95fdff302c3eefe11b12caa8a53785b8713267fd.pnj" width="200">
+                <br> it's cable two <br>Cable Time: <font size="4">
+                    <div class="clock" timezone="-5">:</div>
+                    </p>
+                </font>
+                <p class="boxys" style="background-color:#ff0000;background-image:linear-gradient(#ff0000,orange);">🌎 cabletwo.net
+                <p>
+                <p class="boxys" style="background-color:#ffdf00;background-image:linear-gradient(orange,#ffdf00);">🐤 @cabletwotv
+                <p>
+                <p class="boxys" style="background-color:#00ff0b;background-image:linear-gradient(#ffdf00,#00ff0b);">cabletwo.net/highlights
+                <p>
+                <p class="boxys" style="background-color:#003eff;background-image:linear-gradient(#00ff0b,#003eff);">💬 cabletwo.net/discord
+                <p>
+                <p class="boxys" style="background-color:#7600ff;background-image:linear-gradient(#7600ff,#003eff);">🤙 (323) 484-6515
+                <p>
+                    <b>Testimonial</b>
+                <br>
+                    <i>This is no longer available due to a copyright claim by Gajillion Inc.</i>
+                    <br>John Gajillion
+            </div>
+            <div id="cablethird">
+                <div class="cablethirdtext">Welcome to Cable Two - Only on, always on. For more information, visit cabletwo.net ⛷️✌️ 🚶 💞 2️⃣</div>
+            </div>
+        </div>
+        <audio autoplay loop hidden id="Vmk" source src="https://dl.dropbox.com/s/4oj8ixhl264nmoh/Weatherscan%20Track%2025.mp3">
+            <source src="https://dl.dropbox.com/s/ukebkknmh112qqa/Weatherscan-Track-25.ogg" /> Your browser does not support the <code>audio</code> element.
+        </audio>
+    </body>
+</html>
