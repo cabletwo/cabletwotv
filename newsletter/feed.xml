@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+      <title>Cable Two Newsletter</title>
+      <link>https://cabletwo.github.io/cabletwotv/newsletter</link>
+      <description>this is the cable two newsletter.
+your all-access pass to the world of cable two
+including our schedule, news, and all kinds of other stuff</description>
+      <language>en-us</language>
+      <image>
+	<title>Cable Two</title>
+	<link>https://cabletwo.github.io/cabletwotv</link>
+	<url>https://cabletwo.github.io/cabletwotv/assets/circlelogo.png</url>
+	<width>240</width>
+	<height>240</height>
+      </image>
+      <item>
+	<title>ancient free orange</title>
+	<pubDate>March 9, 2023</pubDate>
+	<link>https://cabletwo.github.io/cabletwotv/newsletter/5</link>
+	<description><![CDATA[ancient free orange]]></description>
+      </item>
+  </channel>
+</rss>
