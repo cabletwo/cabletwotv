@@ -295,27 +295,12 @@ background-image: url('https://sadhost.neocities.org/images/tiles/image005.gif')
     <script>
     function showDateTime() {
 	var myDiv = document.getElementById("myDiv");
-	var date = new Date();
-	var dayList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-	var monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-  ];
-	var dayName = dayList[date.getDay()];
-	var monthName = monthNames[date.getMonth()];
-	var today = `${dayName}, ${monthName} ${date.getDate()}, ${date.getFullYear()}`;
-	var time = date.toLocaleTimeString('en-US', { timeZone: 'America/Chicago' })
-  myDiv.innerText = ` ${today} ${time}`;
+	const text = Intl.DateTimeFormat('en-US', {
+	    timeZone: 'America/Chicago',
+	    dateStyle: 'full',
+	    timeStyle: 'medium'
+	}).formatToParts(new Date()).map((p) => p.value).toSpliced(7, 1, ' ').reduce((x, y) => x + y);
+	myDiv.innerText = text;
 }
 setInterval(showDateTime, 1000);
 </script>
