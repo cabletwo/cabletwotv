@@ -1,0 +1,986 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html prefix="og: https://ogp.me/ns#"><script type="text/javascript">try {
+(function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverrideWebRTC, isInjected) { 
+
+    'use strict';
+
+    /**
+     * If script have been injected into a frame via contentWindow then we can simply take the copy of messageChannel left for us by parent document
+     * Otherwise creates new message channel that sends a message to the content-script to check if request should be allowed or not.
+     */
+    var messageChannel = isInjected ? window[scriptName] : (function () {
+
+        // Save original postMessage and addEventListener functions to prevent webpage from tampering both.
+        var postMessage = window.postMessage;
+        var addEventListener = window.addEventListener;
+
+        // Current request ID (incremented every time we send a new message)
+        var currentRequestId = 0;
+        var requestsMap = {};
+
+        /**
+         * Handles messages sent from the content script back to the page script.
+         *
+         * @param event Event with necessary data
+         */
+        var onMessageReceived = function (event) {
+
+            if (!event.data || !event.data.direction || event.data.direction !== "to-page-script@abu") {
+                return;
+            }
+
+            var requestData = requestsMap[event.data.requestId];
+            if (requestData) {
+                var wrapper = requestData.wrapper;
+                requestData.onResponseReceived(wrapper, event.data.block);
+                delete requestsMap[event.data.requestId];
+            }
+        };
+
+        /**
+         * @param url                The URL to which wrapped object is willing to connect
+         * @param requestType        Request type ( WEBSOCKET or WEBRTC)
+         * @param wrapper            WebSocket wrapper instance
+         * @param onResponseReceived Called when response is received
+         */
+        var sendMessage = function (url, requestType, wrapper, onResponseReceived) {
+
+            if (currentRequestId === 0) {
+                // Subscribe to response when this method is called for the first time
+                addEventListener.call(window, "message", onMessageReceived, false);
+            }
+
+            var requestId = ++currentRequestId;
+            requestsMap[requestId] = {
+                wrapper: wrapper,
+                onResponseReceived: onResponseReceived
+            };
+
+            var message = {
+                requestId: requestId,
+                direction: 'from-page-script@abu',
+                elementUrl: url,
+                documentUrl: document.URL,
+                requestType: requestType
+            };
+
+            // Send a message to the background page to check if the request should be blocked
+            postMessage.call(window, message, "*");
+        };
+
+        return {
+            sendMessage: sendMessage
+        };
+
+    })();
+
+    /*
+     * In some case Chrome won't run content scripts inside frames.
+     * So we have to intercept access to contentWindow/contentDocument and manually inject wrapper script into this context
+     *
+     * Based on: https://github.com/adblockplus/adblockpluschrome/commit/1aabfb3346dc0821c52dd9e97f7d61b8c99cd707
+     */
+    var injectedToString = Function.prototype.toString.bind(injectPageScriptAPI);
+
+    var injectedFramesAdd;
+    var injectedFramesHas;
+    if (window.WeakSet instanceof Function) {
+        var injectedFrames = new WeakSet();
+        injectedFramesAdd = WeakSet.prototype.add.bind(injectedFrames);
+        injectedFramesHas = WeakSet.prototype.has.bind(injectedFrames);
+    } else {
+        var frames = [];
+        injectedFramesAdd = function (el) {
+            if (frames.indexOf(el) < 0) {
+                frames.push(el);
+            }
+        };
+        injectedFramesHas = function (el) {
+            return frames.indexOf(el) >= 0;
+        };
+    }
+
+    /**
+     * Injects wrapper's script into passed window
+     * @param contentWindow Frame's content window
+     */
+    function injectPageScriptAPIInWindow(contentWindow) {
+        try {
+            if (contentWindow && !injectedFramesHas(contentWindow)) {
+                injectedFramesAdd(contentWindow);
+                contentWindow[scriptName] = messageChannel; // Left message channel for the injected script
+                var args = "'" + scriptName + "', " + shouldOverrideWebSocket + ", " + shouldOverrideWebRTC + ", true";
+                contentWindow.eval("(" + injectedToString() + ")(" + args + ");");
+                delete contentWindow[scriptName];
+            }
+        } catch (e) {
+        }
+    }
+
+    /**
+     * Overrides access to contentWindow/contentDocument for the passed HTML element's interface (iframe, frame, object)
+     * If the content of one of these objects is requested we will inject our wrapper script.
+     * @param iface HTML element's interface
+     */
+    function overrideContentAccess(iface) {
+
+        var contentWindowDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, "contentWindow");
+        var contentDocumentDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, "contentDocument");
+
+        // Apparently in HTMLObjectElement.prototype.contentWindow does not exist
+        // in older versions of Chrome such as 42.
+        if (!contentWindowDescriptor) {
+            return;
+        }
+
+        var getContentWindow = Function.prototype.call.bind(contentWindowDescriptor.get);
+        var getContentDocument = Function.prototype.call.bind(contentDocumentDescriptor.get);
+
+        contentWindowDescriptor.get = function () {
+            var contentWindow = getContentWindow(this);
+            injectPageScriptAPIInWindow(contentWindow);
+            return contentWindow;
+        };
+        contentDocumentDescriptor.get = function () {
+            injectPageScriptAPIInWindow(getContentWindow(this));
+            return getContentDocument(this);
+        };
+
+        Object.defineProperty(iface.prototype, "contentWindow", contentWindowDescriptor);
+        Object.defineProperty(iface.prototype, "contentDocument", contentDocumentDescriptor);
+    }
+
+    var interfaces = [HTMLFrameElement, HTMLIFrameElement, HTMLObjectElement];
+    for (var i = 0; i < interfaces.length; i++) {
+        overrideContentAccess(interfaces[i]);
+    }
+
+    /**
+     * Defines properties in destination object
+     * @param src Source object
+     * @param dest Destination object
+     * @param properties Properties to copy
+     */
+    var copyProperties = function (src, dest, properties) {
+        for (var i = 0; i < properties.length; i++) {
+            var prop = properties[i];
+            var descriptor = Object.getOwnPropertyDescriptor(src, prop);
+            // Passed property may be undefined
+            if (descriptor) {
+                Object.defineProperty(dest, prop, descriptor);
+            }
+        }
+    };
+
+    /**
+     * Check request by sending message to content script
+     * @param url URL to block
+     * @param type Request type
+     * @param callback Result callback
+     */
+    var checkRequest = function (url, type, callback) {
+        messageChannel.sendMessage(url, type, this, function (wrapper, blockConnection) {
+            callback(blockConnection);
+        });
+    };
+
+    /**
+     * The function overrides window.WebSocket with our wrapper, that will check url with filters through messaging with content-script.
+     *
+     * IMPORTANT NOTE:
+     * This function is first loaded as a content script. The only purpose of it is to call
+     * the "toString" method and use resulting string as a text content for injected script.
+     */
+    var overrideWebSocket = function () { 
+
+        if (!(window.WebSocket instanceof Function)) {
+            return;
+        }
+
+        /**
+         * WebSocket wrapper implementation.
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/349
+         *
+         * Based on:
+         * https://github.com/adblockplus/adblockpluschrome/commit/457a336ee55a433217c3ffe5d363e5c6980f26f4
+         */
+
+        /**
+         * As far as possible we must track everything we use that could be sabotaged by the website later in order to circumvent us.
+         */
+        var RealWebSocket = WebSocket;
+        var closeWebSocket = Function.prototype.call.bind(RealWebSocket.prototype.close);
+
+        function WrappedWebSocket(url, protocols) {
+            // Throw correct exceptions if the constructor is used improperly.
+            if (!(this instanceof WrappedWebSocket)) {
+                return RealWebSocket();
+            }
+            if (arguments.length < 1) {
+                return new RealWebSocket();
+            }
+
+            var websocket = new RealWebSocket(url, protocols);
+
+            // This is the key point: checking if this WS should be blocked or not
+            // Don't forget that the type of 'websocket.url' is String, but 'url 'parameter might have another type.
+            checkRequest(websocket.url, 'WEBSOCKET', function (blocked) {
+                if (blocked) {
+                    closeWebSocket(websocket);
+                }
+            });
+
+            return websocket;
+        }
+
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/488
+        WrappedWebSocket.prototype = RealWebSocket.prototype;
+        window.WebSocket = WrappedWebSocket.bind();
+
+        copyProperties(RealWebSocket, WebSocket, ["CONNECTING", "OPEN", "CLOSING", "CLOSED", "name", "prototype"]);
+
+        RealWebSocket.prototype.constructor = WebSocket;
+
+    };
+
+    /**
+     * The function overrides window.RTCPeerConnection with our wrapper, that will check ice servers URLs with filters through messaging with content-script.
+     *
+     * IMPORTANT NOTE:
+     * This function is first loaded as a content script. The only purpose of it is to call
+     * the "toString" method and use resulting string as a text content for injected script.
+     */
+    var overrideWebRTC = function () { 
+
+
+        if (!(window.RTCPeerConnection instanceof Function) &&
+            !(window.webkitRTCPeerConnection instanceof Function)) {
+            return;
+        }
+
+        /**
+         * RTCPeerConnection wrapper implementation.
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
+         *
+         * Based on:
+         * https://github.com/adblockplus/adblockpluschrome/commit/af0585137be19011eace1cf68bf61eed2e6db974
+         *
+         * Chromium webRequest API doesn't allow the blocking of WebRTC connections
+         * https://bugs.chromium.org/p/chromium/issues/detail?id=707683
+         */
+
+        var RealRTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
+        var closeRTCPeerConnection = Function.prototype.call.bind(RealRTCPeerConnection.prototype.close);
+
+        var RealArray = Array;
+        var RealString = String;
+        var createObject = Object.create;
+        var defineProperty = Object.defineProperty;
+
+        /**
+         * Convert passed url to string
+         * @param url URL
+         * @returns {string}
+         */
+        function urlToString(url) {
+            if (typeof url !== "undefined") {
+                return RealString(url);
+            }
+        }
+
+        /**
+         * Creates new immutable array from original with some transform function
+         * @param original
+         * @param transform
+         * @returns {*}
+         */
+        function safeCopyArray(original, transform) {
+
+            if (original === null || typeof original !== "object") {
+                return original;
+            }
+
+            var immutable = RealArray(original.length);
+            for (var i = 0; i < immutable.length; i++) {
+                defineProperty(immutable, i, {
+                    configurable: false, enumerable: false, writable: false,
+                    value: transform(original[i])
+                });
+            }
+            defineProperty(immutable, "length", {
+                configurable: false, enumerable: false, writable: false,
+                value: immutable.length
+            });
+            return immutable;
+        }
+
+        /**
+         * Protect configuration from mutations
+         * @param configuration RTCPeerConnection configuration object
+         * @returns {*}
+         */
+        function protectConfiguration(configuration) {
+
+            if (configuration === null || typeof configuration !== "object") {
+                return configuration;
+            }
+
+            var iceServers = safeCopyArray(
+                configuration.iceServers,
+                function (iceServer) {
+
+                    var url = iceServer.url;
+                    var urls = iceServer.urls;
+
+                    // RTCPeerConnection doesn't iterate through pseudo Arrays of urls.
+                    if (typeof urls !== "undefined" && !(urls instanceof RealArray)) {
+                        urls = [urls];
+                    }
+
+                    return createObject(iceServer, {
+                        url: {
+                            configurable: false, enumerable: false, writable: false,
+                            value: urlToString(url)
+                        },
+                        urls: {
+                            configurable: false, enumerable: false, writable: false,
+                            value: safeCopyArray(urls, urlToString)
+                        }
+                    });
+                }
+            );
+
+            return createObject(configuration, {
+                iceServers: {
+                    configurable: false, enumerable: false, writable: false,
+                    value: iceServers
+                }
+            });
+        }
+
+        /**
+         * Check WebRTC connection's URL and close if it's blocked by rule
+         * @param connection Connection
+         * @param url URL to check
+         */
+        function checkWebRTCRequest(connection, url) {
+            checkRequest(url, 'WEBRTC', function (blocked) {
+                if (blocked) {
+                    try {
+                        closeRTCPeerConnection(connection);
+                    } catch (e) {
+                        // Ignore exceptions
+                    }
+                }
+            });
+        }
+
+        /**
+         * Check each URL of ice server in configuration for blocking.
+         *
+         * @param connection RTCPeerConnection
+         * @param configuration Configuration for RTCPeerConnection
+         * https://developer.mozilla.org/en-US/docs/Web/API/RTCConfiguration
+         */
+        function checkConfiguration(connection, configuration) {
+
+            if (!configuration || !configuration.iceServers) {
+                return;
+            }
+
+            var iceServers = configuration.iceServers;
+            for (var i = 0; i < iceServers.length; i++) {
+
+                var iceServer = iceServers[i];
+                if (!iceServer) {
+                    continue;
+                }
+
+                if (iceServer.url) {
+                    checkWebRTCRequest(connection, iceServer.url);
+                }
+
+                if (iceServer.urls) {
+                    for (var j = 0; j < iceServer.urls.length; j++) {
+                        checkWebRTCRequest(connection, iceServer.urls[j]);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Overrides setConfiguration method
+         * https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setConfiguration
+         */
+        if (RealRTCPeerConnection.prototype.setConfiguration) {
+
+            var realSetConfiguration = Function.prototype.call.bind(RealRTCPeerConnection.prototype.setConfiguration);
+
+            RealRTCPeerConnection.prototype.setConfiguration = function (configuration) {
+                configuration = protectConfiguration(configuration);
+                // Call the real method first, so that validates the configuration
+                realSetConfiguration(this, configuration);
+                checkConfiguration(this, configuration);
+            };
+        }
+
+        function WrappedRTCPeerConnection(configuration, arg) {
+
+            if (!(this instanceof WrappedRTCPeerConnection)) {
+                return RealRTCPeerConnection();
+            }
+
+            configuration = protectConfiguration(configuration);
+
+            /**
+             * The old webkitRTCPeerConnection constructor takes an optional second argument and we must pass it.
+             */
+            var connection = new RealRTCPeerConnection(configuration, arg);
+            checkConfiguration(connection, configuration);
+            return connection;
+        }
+
+        WrappedRTCPeerConnection.prototype = RealRTCPeerConnection.prototype;
+
+        var boundWrappedRTCPeerConnection = WrappedRTCPeerConnection.bind();
+        copyProperties(RealRTCPeerConnection, boundWrappedRTCPeerConnection, ["caller", "generateCertificate", "name", "prototype"]);
+        RealRTCPeerConnection.prototype.constructor = boundWrappedRTCPeerConnection;
+
+        if ("RTCPeerConnection" in window) {
+            window.RTCPeerConnection = boundWrappedRTCPeerConnection;
+        }
+        if ("webkitRTCPeerConnection" in window) {
+            window.webkitRTCPeerConnection = boundWrappedRTCPeerConnection;
+        }
+    };
+
+    if (shouldOverrideWebSocket) {
+        overrideWebSocket();
+    }
+
+    if (shouldOverrideWebRTC) {
+        overrideWebRTC();
+    }
+})('wrapper-script-2422937317095223', false, true);
+} catch (ex) { console.error('Error executing AG js: ' + ex); }
+(function () {
+            var current = document.currentScript;
+            var parent = current && current.parentNode;
+            if (parent) {
+                parent.removeChild(current);
+            }
+        })();</script><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width" initial-scale="1">
+
+<!--[if !mso]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <![endif]-->
+
+<meta name="x-apple-disable-message-reformatting">
+
+<title></title>
+
+<!--[if mso]>
+        <style>
+            * { font-family: sans-serif !important; }
+        </style>
+    <![endif]-->
+<style>
+        /* Box sizing. Gets decent support. */
+
+        *,
+        *:after,
+        *:before {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        /* Prevents small text resizing. */
+
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+        /* Basic reset. Removes default spacing around emails in various clients.  */
+
+        html,
+        body,
+        .document {
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0;
+            padding: 0;
+        }
+        /* Improves text rendering when supported. */
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        /* Centers email to device width in Android 4.4.  */
+        div[style*="margin: 16px 0"] {
+            margin: 0 !important;
+        }
+        /* Removes added spacing within tables in Outlook.  */
+
+        table,
+        td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        /* Removes added spacing within tables in WebKit. */
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0 auto;
+        }
+        /* Responsive images. Improves rendering of scaled images in IE. */
+        img {
+            -ms-interpolation-mode: bicubic;
+            max-width: 100%;
+            border: 0;
+        }
+        /* Overrules triggered links in iOS. */
+
+        *[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+        /* Overrules triggered links in Gmail. */
+
+        .x-gmail-data-detectors,
+        .x-gmail-data-detectors *,
+        .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+        }
+
+        /* Define font */
+        body,
+        html,
+        td {
+            font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif; /* Font family */
+            color: rgb(255, 255, 255); /* Font color */
+        }
+
+        a, .container a{
+            color: BLUE; /* Link color */
+            text-decoration: underline; /* Link decoration */
+        }
+
+        /* Froala specific styling to make the link take wrapper styling */
+        span > a {
+            color: inherit !important;
+        }
+
+        /* Media queries o' doom. */
+        @media screen and (max-width: 450px) {
+            /* Transitions container to a fluid layout. */
+            .container {
+                width: 100%;
+                margin: auto;
+            }
+            /* Collapses table cells into full-width rows. */
+            .stack {
+                display: block!important;
+                width: 100%!important;
+                max-width: 100%!important;
+            }
+            /* Centers and expands CTA. */
+            .eo-button{
+                width: 100%!important;
+                text-align: center;
+                margin: auto!important;
+            }
+            .eo-button td, .eo-button tr {
+                display: block!important;
+            }
+        }
+    </style>
+<meta name="twitter:card" content="summary_large_image"><meta property="og:title" content="twosday special"><meta property="og:description" content="are you prepared for C2K?"><meta property="og:image" content="http://eocampaign1.com/screenshot.png?url=http%3A%2F%2Feocampaign1.com%2Fpreview%3Fp%3D5b93e43e-b21f-11ed-9ddf-d70245c80269%26pt%3Dcampaign%26t%3D1677010877%26cb%3D20230104%26s%3D11780fab8ee18bb82e5b4c72e06802894643589ab0e65b70352ce0ef2eb80c89&amp;viewport_width=1300&amp;viewport_height=650&amp;width=1300"><meta property="og:url" content="http://eocampaign1.com/web-version?p=5b93e43e-b21f-11ed-9ddf-d70245c80269&amp;pt=campaign&amp;t=1677010877&amp;s=74025958a0e3b668a4a2b35ef1e15d769a1fe8c89cb86dd41c4f76747d4d57ab"></head>
+<body bgcolor="black" style="color: rgb(255, 255, 255); font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif; font-size: 14px; background-size: auto; background-repeat: repeat; background-image: url(&quot;https://gallery.eocampaign1.com/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675504344427-bck-crackle.gif&quot;); background-color: black;" eo-background="" class="" background="web-version3_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675504344427-bck-crack.gif">
+<div style="display:none;max-height:0px;overflow:hidden;">
+are you prepared for C2K?
+</div>
+<div style="display:none;max-height:0px;overflow:hidden;">&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;</div>
+<table class="document" align="center">
+<tbody>
+<tr>
+<td valign="top">
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="600" class="container">
+<tbody>
+<tr class="inner-body">
+<td>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr class="header">
+<td class="container" style="background-color:#000000;" bgcolor="#000000">
+<table width="100%">
+<tbody>
+<tr>
+<td class="container">
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%" bgcolor="#000000" style="background-color:#000000;">
+<tbody>
+<tr>
+<td style="padding:0 15px 0 15px;">
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:10px;margin-top:10px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version3_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675504365760-c2logohd.png" width="107" alt="Example logo" style="width:19%;max-width:100%;padding:0px;border:none;display:block;">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr bgcolor="#000000" style="background-color:#000000;">
+<td class="container">
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" style="margin-bottom:0px;padding-top:5px;padding-bottom:5px;" width="100%">
+<tbody>
+<tr>
+<td width="100%" class="container" style="padding:0 15px 15px;">
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:0px;margin-top:0px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version3_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1677010283788-emailhear.gif" width="279" alt="" style="width:49%;max-width:100%;padding:0px;border:none;display:block;">
+</td>
+</tr>
+</tbody>
+</table>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody><tr>
+<td width="100%" style="text-decoration:none;padding-top:15px;padding-bottom:15px;" class="container text-block"><strong><span style="font-size:30px;">What is Two?</span></strong></td>
+</tr>
+</tbody></table>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:5px;padding-bottom:20px;">
+<div class="text-block" style="color:#313638;"><span style="color:rgb(255,255,255);">The most mysterious of numbers.</span><br><br><span style="color:rgb(255,255,255);">It's
+ the oddball that's even, the underdog of the digits, and the deuce that
+ always has your back. It's the perfect number for pairs, the tag team 
+partner for your soul, and the duet partner to your solo act.</span><br><span style="color:rgb(255,255,255);"><br>Two
+ is the number of choice for those who know that one isn't enough, but 
+three is just too many. It's the number that's not too big, not too 
+small, but just right. It's the number that's always ready for a good 
+time, never too busy to help out a friend, and always up for a game of 
+rock-paper-scissors.</span><br><span style="color:rgb(255,255,255);"><br>In
+ a world of ones and zeros, two is the breath of fresh air, the shake-up
+ that keeps things interesting, and the spice that makes life simply 
+epic.</span><br><br><span style="color:rgb(255,255,255);">So, what is 
+two? It's the number that makes life better, the number that makes us 
+smile, and the number that reminds us that sometimes, the best things in
+ life come in pairs.</span><br><span style="color:rgb(255,255,255);"> </span><br><span style="color:rgb(255,255,255);">It's a number. It's a place.</span><br><span style="color:rgb(255,255,255);">It's Cable Two.</span><br></div>
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody><tr>
+<td width="100%" style="text-decoration:none;padding-top:15px;padding-bottom:15px;" class="container text-block"><h1 style="margin-top:0;margin-bottom:0;font-size:26px;line-height:34px;">Here's the news of the world.</h1></td>
+</tr>
+</tbody></table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block">GROUP JACKBOX STREAM AT 2:22PM CENTRAL ON 2/22 <br>DON'T MISS IT WE ARE SO EXCITED AND WE HAVE SOME BIG ANNOUNCEMENTS<br>THAT YOU WILL NOT WANT TO MISS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!<br><br>We have been loving THE AMENOIA HOUR on Monday and Friday 12pm central!<br><br>Twobot is determined to have a pizza party soon.<br><br>Arby
+ has been sleepy lately but he really wants to work on CLEAN GETAWAY 
+TRAVEL DETECTIVE AGENCY and maybe working on some future specials for 
+TRINA'S WORLD</div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="container">
+<tbody><tr>
+<td valign="top" align="center" style="padding-bottom:10px;">
+<table border="0" cellpadding="0" cellspacing="0" align="center" style="border-radius:3px;background-color:rgb(255,111,0);width:70%;border-collapse:separate;" class="eo-button" width="399">
+<tbody>
+<tr>
+<td align="center" valign="middle">
+<a href="https://twitch.tv/cabletwo" target="_blank" style="font-weight:bold;font-size:18px;padding:18px;letter-spacing:-0.5px;line-height:100%;text-align:center;text-decoration:none;color:rgb(255,255,255);display:block;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;" title="follow us on twitch" rel="noreferrer noopener">follow us on twitch</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody></table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version3_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1677010672550-alc_tea_f.gif" width="570" style="width:100%;max-width:100%;padding:0;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1677010672550-alc_tea_for_two.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody><tr>
+<td width="100%" style="text-decoration:none;padding-top:15px;padding-bottom:15px;" class="container text-block"><h1 style="margin-top:0px;margin-bottom:0px;font-size:26px;line-height:34px;text-align:center;"><span style="font-size:30px;">Tuesday Troubleshooting with Trina</span></h1></td>
+</tr>
+</tbody></table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><strong>Dear Cable Two community,</strong><br><br>Welcome
+ to Trina Tuesday's fashion advice column, where I, Trina Tuesday, your 
+favorite fashionista, am here to help you with all your fashion-related 
+dilemmas. Let's dive right in!<br><br>I'd like to talk to you about the 
+amazing results of a recent study on the benefits of eating Yoplait®
+yogurt. Not only does it taste great, but this study showed that people 
+who ate Yoplait®
+yogurt had a boost in energy and a more positive outlook on life. It 
+just goes to show that the simple things in life, like a delicious cup 
+of Yoplait®
+, can make a big difference in how we feel and approach the day. So 
+let's raise a spoon to Yoplait® , and to all the little things that can 
+make a big impact in our lives. Remember, sometimes the smallest choices
+ can lead to the greatest successes.
+#TrinaTuesdaysForTheWin<br><br>Q: Hi Trina, I have a fashion emergency. I
+ spilled coffee on my favorite white blouse and I don't have time to do 
+laundry. What should I do?<br><br>A: Oh no, coffee stains are the worst!
+ But fear not, dear reader, because Yoplait Yogurt is here to save the 
+day. Apply a dollop of yogurt to the stain and let it sit for 15 
+minutes, then rinse with cold water. The live and active cultures in 
+Yoplait®
+work like magic to break down the stain, leaving your blouse fresh and 
+clean. And if you spill coffee twice, well, that's just the power of the
+ number two!<br><br>Q: Hi Trina, I need to dress up for a work event but I don't want to wear heels. What are some stylish alternatives?<br><br>A:
+ You're in luck, because the number two has your back! Why wear one type
+ of shoe when you can wear two? Rock a funky pair of high-top sneakers 
+or mix and match your shoes for a playful twist on traditional office 
+attire. And after the event, treat yourself to a Yoplait Yogurt to 
+celebrate your fashion bravery. Remember, two is always better than one!<br>That's
+ all for this week's Tuesday Troubleshooting with Trina. Stay stylish, 
+stay true to the power of two, and always have a Yoplait®
+Yogurt handy for all of life's messes.<br><br>Talk to you all later! Bye bye now...<br><br>Love,&nbsp;<br>Trina</div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version3_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1676363780441-border.gif" width="570" style="width:100%;max-width:100%;padding:0;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1676363780441-border.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody><tr>
+<td width="100%" style="text-decoration:none;padding-top:15px;padding-bottom:15px;" class="container text-block"><div style="text-align:center;"><span style="font-size:36px;"></span><span style="font-size:30px;"><strong>Do you know this woman?</strong></span></div></td>
+</tr>
+</tbody></table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:9px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version3_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1677010191498-OnPaste.2.png" width="570" style="width:100%;max-width:100%;padding:0;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1677010191498-OnPaste.20230213-122653.png">
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:15px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version3_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1676363780441-border.gif" width="570" style="width:100%;max-width:100%;padding:0;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1676363780441-border.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block">I don’t go out much, because going out costs 
+money, and also because I have a fear of crossing thresholds uninvited, 
+which I have to do almost any time I want to leave the house.<br><br>Today
+ I’m thinking of vampires. A vampire may not enter your home without 
+permission, but can it stand on your outdoor property? Vampire media 
+would suggest so, but we all know how lax the standards are for vampire 
+representation these days. So, this requires some discussion, to 
+me.&nbsp;<br><br>Some depictions require that a vampire need permission 
+from the host, who may or may not be the owner of the property. Other 
+depictions allow the invitation to be given by any non-vampire within 
+the home, be it host or fellow guest. From this we must assume that in 
+this case, the vampire’s limitation is not express ownership of the 
+property they intend to enter, but invitation into some level of 
+humanity which can only be granted by other humans.<br><br>It follows 
+that in most imaginings, a vampire’s limitation is in relation to not 
+only the threshold of a property, but also the threshold of exterior to 
+interior. A vampire may not cross into your foyer without express 
+invitation (from whomever) — however, it can appear to request such 
+permission on your lawn, or your porch, or elsewhere outside the 
+building, even if you own the property outside of your house just as 
+equally as you own the building that qualifies as your home. It is not a
+ matter of whether the vampire may intrude on your property, rather, it 
+is a matter of whether the vampire may intrude on your humanity.<br><br>
+ Humans do not live outdoors, and as such, vampires may trespass as they
+ please as long as they are outside. But a house is a human 
+construction, a way for some small anchored space of the outside world 
+to be trusted and safe; a home is an extension of one’s self, a 
+checkpoint in the unsafety of everything outside of one’s body. You may 
+sleep there — become vulnerable — peacefully. And as the material world 
+is transformed by one’s humanity, and extends a person thus, so 
+increases the difficulty for a vampire to tread there.<br><br>I wonder 
+if this is the common understanding due to simple practicality in 
+storywriting. All land, these days, is owned, whether by individuals or 
+corporations or departments of the state. If a vampire were limited by 
+whether a piece of land were owned, it would have trouble navigating 
+pretty much anywhere. I suppose it would be frozen in place; it would 
+have to act to leave the space it stood on, but movement in any 
+direction would be an intrusion — except, perhaps, in international 
+waters, and in some countries where air rights do not extend a <em>coelo usque ad centrum.<span style="font-size:9px;">†</span>
+</em>&nbsp;<br></div>
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block">Perhaps there’s a clean compromise: vampires 
+could be restricted by private or individual ownership, but remain 
+unhindered on land owned by the state, or even a sufficiently large 
+group of people. A vampire could pass anywhere considered “in public,” 
+even if that land were technically “owned” by some party, such as most 
+parks, malls, and shared neighborhood walking areas. In this case, a 
+vampire would be prevented from crossing onto your lawn (without 
+permission), but could reasonably stand on the sidewalk nearby.<br> 
+However, I’m sure there would be a loophole with the laws surrounding 
+“public ownership” that would allow the vampire to tread in some 
+unexpected places, like certain government buildings or abandoned 
+properties.<br><br>I suppose, as well, there used to be more royalty in 
+the world. In such cases one could declare themself owner of whole 
+countries of land, or even the whole world, by arguing divine right 
+and/or superior genetics, or whatever else monarchs see sufficient to 
+justify themselves with. In the case of conflicting documentation, it’s 
+as of yet unclear what boundaries a vampire would be beholden to. But 
+there is at least one thing I can say in favor of the “vampires cannot, 
+without permission, tread on any owned property” argument: we don’t see a
+ lot of vampires these days, do we?<br><br>Today’s wisdom:<br><span style="white-space:pre;">&nbsp; &nbsp;&nbsp;</span>Look forward to chance encounters and unexpected guests.<br><br></div>
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%" bgcolor="#ffffff" style="background-color:#ffffff;">
+<tbody>
+<tr>
+<td class="container" style="padding:15px 4px 15px 8px;">
+<div class="text-block"><span style="color:rgb(0,0,0);"><span style="font-size:9px;">&nbsp;†
+</span>I.e., “from the sky and all the way to the center”. Other places 
+may vertically limit the boundaries of “property” and ownership as such.
+ However, this additional airspace is typically owned by the state, for 
+direction of air travel.</span><br></div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version3_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1677010651085-two_bird.gif" width="570" style="width:100%;max-width:100%;padding:0;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1677010651085-two_bird.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody><tr>
+<td width="100%" style="text-decoration:none;padding-top:15px;padding-bottom:15px;" class="container text-block"><div style="text-align:center;"><strong><span style="font-size:36px;">Schedule of the Week</span></strong></div></td>
+</tr>
+</tbody></table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;"><strong>Monday</strong> </div><div style="text-align:center;">The Amenoia Hour 12pm </div><div style="text-align:center;">HLA 4pm</div><br><div style="text-align:center;"> </div><div style="text-align:center;">
+<strong>Tuesday</strong> </div><div style="text-align:center;">Fantasy Flight 8pm</div><br><div style="text-align:center;"> </div><div style="text-align:center;">
+<strong>TWOSDAY</strong> </div><div style="text-align:center;">Jackbox 2:22pm </div><div style="text-align:center;">Warp Zone? 5pm</div><br><div style="text-align:center;"> </div><div style="text-align:center;">
+<strong>Thursday</strong> </div><div style="text-align:center;">Empty Jar 8:20pm </div><div style="text-align:center;">The Long Haul 11pm</div><br><div style="text-align:center;"> </div><div style="text-align:center;">
+<strong>Friday</strong> </div><div style="text-align:center;">The Amenoia Hour 12pm </div><div style="text-align:center;">Trina's World 8pm</div><br><div style="text-align:center;"> </div><div style="text-align:center;">
+<strong>Sunday</strong> </div><div style="text-align:center;">Warp Zone 5pm </div><div style="text-align:center;">Twobot's Corner 10pm
+<br></div><br></div>
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;"><strong>That's it for this week's newsletter. Happy TWOSDAY everyone!</strong></div><div style="text-align:center;"><strong>Love, Twobot</strong><strong></strong></div></div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="container">
+<tbody><tr>
+<td valign="top" align="center" style="padding-bottom:10px;">
+<table border="0" cellpadding="0" cellspacing="0" align="center" style="border-collapse:separate;border-radius:3px;background-color:#70C2C3;width:70%;" class="eo-button" width="399">
+<tbody>
+<tr>
+<td align="center" valign="middle">
+<a href="https://twitch.tv/cabletwo" target="_blank" style="font-weight:bold;font-size:18px;padding:18px;letter-spacing:-0.5px;line-height:100%;text-align:center;text-decoration:none;color:rgb(255,255,255);display:block;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;" title="Like the newsletter? Let us know. Give us a call @ 323 484-6515" rel="noreferrer noopener">Like the newsletter? Let us know. Give us a call @ 323 484-6515</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody></table></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="background:none;">
+<td class="container">
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:20px;padding-bottom:10px;">
+<div class="text-block" style="font-size:11px;text-align:center;color:#313638;"><span>You received this email because you subscribed to our list. You can <a href="https://eocampaign1.com/unsubscribe?ep=-1&amp;l=%3C%3CID%3E%3E&amp;lc=%3C%3CID%3E%3E&amp;p=5b93e43e-b21f-11ed-9ddf-d70245c80269&amp;pt=campaign&amp;pv=4&amp;spa=1677010875&amp;t=1677010877&amp;s=52e2e4d313cf0591cb255fa25dbfd9cf8b0389a828d09711ac3f68befedc1afe">unsubscribe</a> at any time.</span>
+<span><br><br></span>
+<span>111 W Harbor Dr<br>San Diego<br>CA<br>92101<br>United States of America</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:10px;margin-top:0px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<a href="https://eocampaign1.com/rewards?lc=%3C%3CID%3E%3E&amp;p=5b93e43e-b21f-11ed-9ddf-d70245c80269&amp;pt=campaign&amp;t=1677010877&amp;s=e9230f9b94d704e50a22db63451f9c99725afd6900f32283dea2d8ae3b7a3f63" style="display:block;">
+<img src="web-version3_files/66e26967-4f4c-11e9-a3c9-06b79b628af2_1669374354711-powered-b.png" alt="Powered by EmailOctopus" width="150" style="width:150px;padding:0;border:none;display:block;">
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+
+</body></html>
