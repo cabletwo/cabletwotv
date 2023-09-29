@@ -15,10 +15,34 @@ including our schedule, news, and all kinds of other stuff</description>
 	<height>240</height>
       </image>
       <item>
-	<title>ancient free orange</title>
+	<title>ancient free Orange</title>
 	<pubDate>March 9, 2023</pubDate>
-	<link>https://cabletwo.github.io/cabletwotv/newsletter/5</link>
-	<description><![CDATA[ancient free orange]]></description>
+	<link>https://cabletwo.github.io/cabletwotv/newsletter/archive/web-version5.htm</link>
+	<description><![CDATA[ancient free Orange]]></description>
+      </item>
+      <item>
+	<title>(BIG CORRECTION</title>
+	<pubDate>February 21, 2023</pubDate>
+	<link>https://cabletwo.github.io/cabletwotv/newsletter/archive/web-version4.htm</link>
+	<description><![CDATA[(BIG CORRECTION]]></description>
+      </item>
+      <item>
+	<title>twosday special</title>
+	<pubDate>February 21, 2023</pubDate>
+	<link>https://cabletwo.github.io/cabletwotv/newsletter/archive/web-version3.htm</link>
+	<description><![CDATA[twosday special]]></description>
+      </item>
+      <item>
+	<title>will you be our cabletine?</title>
+	<pubDate>February 14, 2023</pubDate>
+	<link>https://cabletwo.github.io/cabletwotv/newsletter/archive/web-version2.htm</link>
+	<description><![CDATA[will you be our cabletine?]]></description>
+      </item>
+      <item>
+	<title>it's the cable two newsletter</title>
+	<pubDate>February 1, 2023</pubDate>
+	<link>https://cabletwo.github.io/cabletwotv/newsletter/archive/web-version1.htm</link>
+	<description><![CDATA[it's the cable two newsletter]]></description>
       </item>
   </channel>
 </rss>

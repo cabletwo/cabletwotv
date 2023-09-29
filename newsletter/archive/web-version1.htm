@@ -1,0 +1,893 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html prefix="og: https://ogp.me/ns#"><script type="text/javascript">try {
+(function injectPageScriptAPI(scriptName, shouldOverrideWebSocket, shouldOverrideWebRTC, isInjected) { 
+
+    'use strict';
+
+    /**
+     * If script have been injected into a frame via contentWindow then we can simply take the copy of messageChannel left for us by parent document
+     * Otherwise creates new message channel that sends a message to the content-script to check if request should be allowed or not.
+     */
+    var messageChannel = isInjected ? window[scriptName] : (function () {
+
+        // Save original postMessage and addEventListener functions to prevent webpage from tampering both.
+        var postMessage = window.postMessage;
+        var addEventListener = window.addEventListener;
+
+        // Current request ID (incremented every time we send a new message)
+        var currentRequestId = 0;
+        var requestsMap = {};
+
+        /**
+         * Handles messages sent from the content script back to the page script.
+         *
+         * @param event Event with necessary data
+         */
+        var onMessageReceived = function (event) {
+
+            if (!event.data || !event.data.direction || event.data.direction !== "to-page-script@abu") {
+                return;
+            }
+
+            var requestData = requestsMap[event.data.requestId];
+            if (requestData) {
+                var wrapper = requestData.wrapper;
+                requestData.onResponseReceived(wrapper, event.data.block);
+                delete requestsMap[event.data.requestId];
+            }
+        };
+
+        /**
+         * @param url                The URL to which wrapped object is willing to connect
+         * @param requestType        Request type ( WEBSOCKET or WEBRTC)
+         * @param wrapper            WebSocket wrapper instance
+         * @param onResponseReceived Called when response is received
+         */
+        var sendMessage = function (url, requestType, wrapper, onResponseReceived) {
+
+            if (currentRequestId === 0) {
+                // Subscribe to response when this method is called for the first time
+                addEventListener.call(window, "message", onMessageReceived, false);
+            }
+
+            var requestId = ++currentRequestId;
+            requestsMap[requestId] = {
+                wrapper: wrapper,
+                onResponseReceived: onResponseReceived
+            };
+
+            var message = {
+                requestId: requestId,
+                direction: 'from-page-script@abu',
+                elementUrl: url,
+                documentUrl: document.URL,
+                requestType: requestType
+            };
+
+            // Send a message to the background page to check if the request should be blocked
+            postMessage.call(window, message, "*");
+        };
+
+        return {
+            sendMessage: sendMessage
+        };
+
+    })();
+
+    /*
+     * In some case Chrome won't run content scripts inside frames.
+     * So we have to intercept access to contentWindow/contentDocument and manually inject wrapper script into this context
+     *
+     * Based on: https://github.com/adblockplus/adblockpluschrome/commit/1aabfb3346dc0821c52dd9e97f7d61b8c99cd707
+     */
+    var injectedToString = Function.prototype.toString.bind(injectPageScriptAPI);
+
+    var injectedFramesAdd;
+    var injectedFramesHas;
+    if (window.WeakSet instanceof Function) {
+        var injectedFrames = new WeakSet();
+        injectedFramesAdd = WeakSet.prototype.add.bind(injectedFrames);
+        injectedFramesHas = WeakSet.prototype.has.bind(injectedFrames);
+    } else {
+        var frames = [];
+        injectedFramesAdd = function (el) {
+            if (frames.indexOf(el) < 0) {
+                frames.push(el);
+            }
+        };
+        injectedFramesHas = function (el) {
+            return frames.indexOf(el) >= 0;
+        };
+    }
+
+    /**
+     * Injects wrapper's script into passed window
+     * @param contentWindow Frame's content window
+     */
+    function injectPageScriptAPIInWindow(contentWindow) {
+        try {
+            if (contentWindow && !injectedFramesHas(contentWindow)) {
+                injectedFramesAdd(contentWindow);
+                contentWindow[scriptName] = messageChannel; // Left message channel for the injected script
+                var args = "'" + scriptName + "', " + shouldOverrideWebSocket + ", " + shouldOverrideWebRTC + ", true";
+                contentWindow.eval("(" + injectedToString() + ")(" + args + ");");
+                delete contentWindow[scriptName];
+            }
+        } catch (e) {
+        }
+    }
+
+    /**
+     * Overrides access to contentWindow/contentDocument for the passed HTML element's interface (iframe, frame, object)
+     * If the content of one of these objects is requested we will inject our wrapper script.
+     * @param iface HTML element's interface
+     */
+    function overrideContentAccess(iface) {
+
+        var contentWindowDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, "contentWindow");
+        var contentDocumentDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, "contentDocument");
+
+        // Apparently in HTMLObjectElement.prototype.contentWindow does not exist
+        // in older versions of Chrome such as 42.
+        if (!contentWindowDescriptor) {
+            return;
+        }
+
+        var getContentWindow = Function.prototype.call.bind(contentWindowDescriptor.get);
+        var getContentDocument = Function.prototype.call.bind(contentDocumentDescriptor.get);
+
+        contentWindowDescriptor.get = function () {
+            var contentWindow = getContentWindow(this);
+            injectPageScriptAPIInWindow(contentWindow);
+            return contentWindow;
+        };
+        contentDocumentDescriptor.get = function () {
+            injectPageScriptAPIInWindow(getContentWindow(this));
+            return getContentDocument(this);
+        };
+
+        Object.defineProperty(iface.prototype, "contentWindow", contentWindowDescriptor);
+        Object.defineProperty(iface.prototype, "contentDocument", contentDocumentDescriptor);
+    }
+
+    var interfaces = [HTMLFrameElement, HTMLIFrameElement, HTMLObjectElement];
+    for (var i = 0; i < interfaces.length; i++) {
+        overrideContentAccess(interfaces[i]);
+    }
+
+    /**
+     * Defines properties in destination object
+     * @param src Source object
+     * @param dest Destination object
+     * @param properties Properties to copy
+     */
+    var copyProperties = function (src, dest, properties) {
+        for (var i = 0; i < properties.length; i++) {
+            var prop = properties[i];
+            var descriptor = Object.getOwnPropertyDescriptor(src, prop);
+            // Passed property may be undefined
+            if (descriptor) {
+                Object.defineProperty(dest, prop, descriptor);
+            }
+        }
+    };
+
+    /**
+     * Check request by sending message to content script
+     * @param url URL to block
+     * @param type Request type
+     * @param callback Result callback
+     */
+    var checkRequest = function (url, type, callback) {
+        messageChannel.sendMessage(url, type, this, function (wrapper, blockConnection) {
+            callback(blockConnection);
+        });
+    };
+
+    /**
+     * The function overrides window.WebSocket with our wrapper, that will check url with filters through messaging with content-script.
+     *
+     * IMPORTANT NOTE:
+     * This function is first loaded as a content script. The only purpose of it is to call
+     * the "toString" method and use resulting string as a text content for injected script.
+     */
+    var overrideWebSocket = function () { 
+
+        if (!(window.WebSocket instanceof Function)) {
+            return;
+        }
+
+        /**
+         * WebSocket wrapper implementation.
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/349
+         *
+         * Based on:
+         * https://github.com/adblockplus/adblockpluschrome/commit/457a336ee55a433217c3ffe5d363e5c6980f26f4
+         */
+
+        /**
+         * As far as possible we must track everything we use that could be sabotaged by the website later in order to circumvent us.
+         */
+        var RealWebSocket = WebSocket;
+        var closeWebSocket = Function.prototype.call.bind(RealWebSocket.prototype.close);
+
+        function WrappedWebSocket(url, protocols) {
+            // Throw correct exceptions if the constructor is used improperly.
+            if (!(this instanceof WrappedWebSocket)) {
+                return RealWebSocket();
+            }
+            if (arguments.length < 1) {
+                return new RealWebSocket();
+            }
+
+            var websocket = new RealWebSocket(url, protocols);
+
+            // This is the key point: checking if this WS should be blocked or not
+            // Don't forget that the type of 'websocket.url' is String, but 'url 'parameter might have another type.
+            checkRequest(websocket.url, 'WEBSOCKET', function (blocked) {
+                if (blocked) {
+                    closeWebSocket(websocket);
+                }
+            });
+
+            return websocket;
+        }
+
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/488
+        WrappedWebSocket.prototype = RealWebSocket.prototype;
+        window.WebSocket = WrappedWebSocket.bind();
+
+        copyProperties(RealWebSocket, WebSocket, ["CONNECTING", "OPEN", "CLOSING", "CLOSED", "name", "prototype"]);
+
+        RealWebSocket.prototype.constructor = WebSocket;
+
+    };
+
+    /**
+     * The function overrides window.RTCPeerConnection with our wrapper, that will check ice servers URLs with filters through messaging with content-script.
+     *
+     * IMPORTANT NOTE:
+     * This function is first loaded as a content script. The only purpose of it is to call
+     * the "toString" method and use resulting string as a text content for injected script.
+     */
+    var overrideWebRTC = function () { 
+
+
+        if (!(window.RTCPeerConnection instanceof Function) &&
+            !(window.webkitRTCPeerConnection instanceof Function)) {
+            return;
+        }
+
+        /**
+         * RTCPeerConnection wrapper implementation.
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
+         *
+         * Based on:
+         * https://github.com/adblockplus/adblockpluschrome/commit/af0585137be19011eace1cf68bf61eed2e6db974
+         *
+         * Chromium webRequest API doesn't allow the blocking of WebRTC connections
+         * https://bugs.chromium.org/p/chromium/issues/detail?id=707683
+         */
+
+        var RealRTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
+        var closeRTCPeerConnection = Function.prototype.call.bind(RealRTCPeerConnection.prototype.close);
+
+        var RealArray = Array;
+        var RealString = String;
+        var createObject = Object.create;
+        var defineProperty = Object.defineProperty;
+
+        /**
+         * Convert passed url to string
+         * @param url URL
+         * @returns {string}
+         */
+        function urlToString(url) {
+            if (typeof url !== "undefined") {
+                return RealString(url);
+            }
+        }
+
+        /**
+         * Creates new immutable array from original with some transform function
+         * @param original
+         * @param transform
+         * @returns {*}
+         */
+        function safeCopyArray(original, transform) {
+
+            if (original === null || typeof original !== "object") {
+                return original;
+            }
+
+            var immutable = RealArray(original.length);
+            for (var i = 0; i < immutable.length; i++) {
+                defineProperty(immutable, i, {
+                    configurable: false, enumerable: false, writable: false,
+                    value: transform(original[i])
+                });
+            }
+            defineProperty(immutable, "length", {
+                configurable: false, enumerable: false, writable: false,
+                value: immutable.length
+            });
+            return immutable;
+        }
+
+        /**
+         * Protect configuration from mutations
+         * @param configuration RTCPeerConnection configuration object
+         * @returns {*}
+         */
+        function protectConfiguration(configuration) {
+
+            if (configuration === null || typeof configuration !== "object") {
+                return configuration;
+            }
+
+            var iceServers = safeCopyArray(
+                configuration.iceServers,
+                function (iceServer) {
+
+                    var url = iceServer.url;
+                    var urls = iceServer.urls;
+
+                    // RTCPeerConnection doesn't iterate through pseudo Arrays of urls.
+                    if (typeof urls !== "undefined" && !(urls instanceof RealArray)) {
+                        urls = [urls];
+                    }
+
+                    return createObject(iceServer, {
+                        url: {
+                            configurable: false, enumerable: false, writable: false,
+                            value: urlToString(url)
+                        },
+                        urls: {
+                            configurable: false, enumerable: false, writable: false,
+                            value: safeCopyArray(urls, urlToString)
+                        }
+                    });
+                }
+            );
+
+            return createObject(configuration, {
+                iceServers: {
+                    configurable: false, enumerable: false, writable: false,
+                    value: iceServers
+                }
+            });
+        }
+
+        /**
+         * Check WebRTC connection's URL and close if it's blocked by rule
+         * @param connection Connection
+         * @param url URL to check
+         */
+        function checkWebRTCRequest(connection, url) {
+            checkRequest(url, 'WEBRTC', function (blocked) {
+                if (blocked) {
+                    try {
+                        closeRTCPeerConnection(connection);
+                    } catch (e) {
+                        // Ignore exceptions
+                    }
+                }
+            });
+        }
+
+        /**
+         * Check each URL of ice server in configuration for blocking.
+         *
+         * @param connection RTCPeerConnection
+         * @param configuration Configuration for RTCPeerConnection
+         * https://developer.mozilla.org/en-US/docs/Web/API/RTCConfiguration
+         */
+        function checkConfiguration(connection, configuration) {
+
+            if (!configuration || !configuration.iceServers) {
+                return;
+            }
+
+            var iceServers = configuration.iceServers;
+            for (var i = 0; i < iceServers.length; i++) {
+
+                var iceServer = iceServers[i];
+                if (!iceServer) {
+                    continue;
+                }
+
+                if (iceServer.url) {
+                    checkWebRTCRequest(connection, iceServer.url);
+                }
+
+                if (iceServer.urls) {
+                    for (var j = 0; j < iceServer.urls.length; j++) {
+                        checkWebRTCRequest(connection, iceServer.urls[j]);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Overrides setConfiguration method
+         * https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setConfiguration
+         */
+        if (RealRTCPeerConnection.prototype.setConfiguration) {
+
+            var realSetConfiguration = Function.prototype.call.bind(RealRTCPeerConnection.prototype.setConfiguration);
+
+            RealRTCPeerConnection.prototype.setConfiguration = function (configuration) {
+                configuration = protectConfiguration(configuration);
+                // Call the real method first, so that validates the configuration
+                realSetConfiguration(this, configuration);
+                checkConfiguration(this, configuration);
+            };
+        }
+
+        function WrappedRTCPeerConnection(configuration, arg) {
+
+            if (!(this instanceof WrappedRTCPeerConnection)) {
+                return RealRTCPeerConnection();
+            }
+
+            configuration = protectConfiguration(configuration);
+
+            /**
+             * The old webkitRTCPeerConnection constructor takes an optional second argument and we must pass it.
+             */
+            var connection = new RealRTCPeerConnection(configuration, arg);
+            checkConfiguration(connection, configuration);
+            return connection;
+        }
+
+        WrappedRTCPeerConnection.prototype = RealRTCPeerConnection.prototype;
+
+        var boundWrappedRTCPeerConnection = WrappedRTCPeerConnection.bind();
+        copyProperties(RealRTCPeerConnection, boundWrappedRTCPeerConnection, ["caller", "generateCertificate", "name", "prototype"]);
+        RealRTCPeerConnection.prototype.constructor = boundWrappedRTCPeerConnection;
+
+        if ("RTCPeerConnection" in window) {
+            window.RTCPeerConnection = boundWrappedRTCPeerConnection;
+        }
+        if ("webkitRTCPeerConnection" in window) {
+            window.webkitRTCPeerConnection = boundWrappedRTCPeerConnection;
+        }
+    };
+
+    if (shouldOverrideWebSocket) {
+        overrideWebSocket();
+    }
+
+    if (shouldOverrideWebRTC) {
+        overrideWebRTC();
+    }
+})('wrapper-script-45270094442561015', false, true);
+} catch (ex) { console.error('Error executing AG js: ' + ex); }
+(function () {
+            var current = document.currentScript;
+            var parent = current && current.parentNode;
+            if (parent) {
+                parent.removeChild(current);
+            }
+        })();</script><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width" initial-scale="1">
+
+<!--[if !mso]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <![endif]-->
+
+<meta name="x-apple-disable-message-reformatting">
+
+<title></title>
+
+<!--[if mso]>
+        <style>
+            * { font-family: sans-serif !important; }
+        </style>
+    <![endif]-->
+<style>
+        /* Box sizing. Gets decent support. */
+
+        *,
+        *:after,
+        *:before {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        /* Prevents small text resizing. */
+
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+        /* Basic reset. Removes default spacing around emails in various clients.  */
+
+        html,
+        body,
+        .document {
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0;
+            padding: 0;
+        }
+        /* Improves text rendering when supported. */
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        /* Centers email to device width in Android 4.4.  */
+        div[style*="margin: 16px 0"] {
+            margin: 0 !important;
+        }
+        /* Removes added spacing within tables in Outlook.  */
+
+        table,
+        td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        /* Removes added spacing within tables in WebKit. */
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0 auto;
+        }
+        /* Responsive images. Improves rendering of scaled images in IE. */
+        img {
+            -ms-interpolation-mode: bicubic;
+            max-width: 100%;
+            border: 0;
+        }
+        /* Overrules triggered links in iOS. */
+
+        *[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+        /* Overrules triggered links in Gmail. */
+
+        .x-gmail-data-detectors,
+        .x-gmail-data-detectors *,
+        .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+        }
+
+        /* Define font */
+        body,
+        html,
+        td {
+            font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif; /* Font family */
+            color: rgb(255, 255, 255); /* Font color */
+        }
+
+        a, .container a{
+            color: #FF7100; /* Link color */
+            text-decoration: underline; /* Link decoration */
+        }
+
+        /* Froala specific styling to make the link take wrapper styling */
+        span > a {
+            color: inherit !important;
+        }
+
+        /* Media queries o' doom. */
+        @media screen and (max-width: 450px) {
+            /* Transitions container to a fluid layout. */
+            .container {
+                width: 100%;
+                margin: auto;
+            }
+            /* Collapses table cells into full-width rows. */
+            .stack {
+                display: block!important;
+                width: 100%!important;
+                max-width: 100%!important;
+            }
+            /* Centers and expands CTA. */
+            .eo-button{
+                width: 100%!important;
+                text-align: center;
+                margin: auto!important;
+            }
+            .eo-button td, .eo-button tr {
+                display: block!important;
+            }
+        }
+    </style>
+<meta name="twitter:card" content="summary_large_image"><meta property="og:title" content="it's the cable two newsletter&nbsp;"><meta property="og:description" content="news, schedule, and more"><meta property="og:image" content="http://eocampaign1.com/screenshot.png?url=http%3A%2F%2Feocampaign1.com%2Fpreview%3Fp%3Dfe1d0cb6-9ac4-11ed-b04b-1f69b4be0305%26pt%3Dcampaign%26t%3D1675263654%26cb%3D20230104%26s%3Dd67831dc27bcfe572e0b60202e54ba89133918b657221da38bb4a1224bbb8910&amp;viewport_width=1300&amp;viewport_height=650&amp;width=1300"><meta property="og:url" content="http://eocampaign1.com/web-version?p=fe1d0cb6-9ac4-11ed-b04b-1f69b4be0305&amp;pt=campaign&amp;t=1675263654&amp;s=61b6dc623862b5debfe9fa2c64ddfedddb602c714d3b748e331b3790045bf701"></head>
+<body bgcolor="black" style="color: rgb(255, 255, 255); font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, Verdana, sans-serif; font-size: 14px; background-size: auto; background-repeat: repeat; background-image: url(&quot;https://gallery.eocampaign1.com/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675237426842-bck-crackle.gif&quot;); background-color: black;" eo-background="" class="" background="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675237426842-bck-crack.gif">
+<div style="display:none;max-height:0px;overflow:hidden;">
+news, schedule, and more
+</div>
+<div style="display:none;max-height:0px;overflow:hidden;">&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;</div>
+<table class="document" align="center">
+<tbody>
+<tr>
+<td valign="top">
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="600" class="container">
+<tbody>
+<tr class="inner-body">
+<td>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr class="header">
+<td class="container" style="background-color:#000000;" bgcolor="#000000">
+<table width="100%">
+<tbody>
+<tr>
+<td class="container">
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td style="padding:0 15px 0 15px;">
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:10px;margin-top:10px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675194844716-circlelog.png" width="85" alt="Example logo" style="width:15%;max-width:100%;padding:0px;border:none;display:block;">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr bgcolor="#000000" style="background-color:#000000;">
+<td class="container">
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" style="margin-bottom:0px;padding-top:5px;padding-bottom:5px;" width="100%">
+<tbody>
+<tr>
+<td width="100%" class="container" style="padding:0 15px 15px;">
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:10px;padding-bottom:0px;">
+<div class="text-block"><div style="text-align:center;color:#999794;"><span style="color:rgb(255,255,255);">Introducing you 2</span></div></div>
+</td>
+</tr>
+</tbody>
+</table>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td width="100%" style="text-decoration:none;padding-top:5px;padding-bottom:5px;" class="container text-block"><div style="text-align:center;"><strong><span style="font-size:48px;">the cable two newsletter</span></strong></div></td>
+</tr>
+</tbody>
+</table>
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:1px;margin-top:1px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675195562314-BARAniSta.gif" width="570" style="width:100%;max-width:100%;padding:0;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675195562314-BARAniStaffWDancingBlueNotes.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="margin-top:5px;">
+<tbody>
+<tr>
+<td class="container" style="padding-top:5px;padding-bottom:20px;">
+<div class="text-block" style="color:#313638;"><div style="text-align:center;"><span style="color:rgb(255,255,255);">hello. what is this?</span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">this is the cable two newsletter.</span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">your all-access pass to the world of cable two</span><br><span style="color:rgb(255,255,255);">including our schedule, news, and all kinds of other stuff</span><br><br><span style="color:rgb(255,255,255);">as we are entering the month of february<br>we are filled with LOVE and GRATITUDE thinking about<br>"the c2" and our cable dogs</span><br><span style="color:rgb(255,255,255);"></span><br></div><br><div style="text-align:center;"><span style="color:rgb(255,255,255);">here's the big news:</span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">SEASON TWO PREMIERE of EMPTY JAR on THURSDAY at 8pm&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></div></div>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:1px;margin-top:1px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675195063496-ejlogo.png" width="193" style="width:34%;max-width:100%;padding:0px;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675195063496-ejlogo.png">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;"><span style="color:rgb(255,255,255);">FANTASY FLIGHT RETURNS on 2/14 @ 8pm&nbsp;</span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">o7 captain.</span></div></div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:1px;margin-top:1px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675195451245-giphy.gif" width="285" style="width:50%;max-width:100%;padding:0px;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675195451245-giphy.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody><tr>
+<td width="100%" style="text-decoration:none;padding-top:1px;padding-bottom:1px;" class="container text-block"><h1 style="margin-top:0px;margin-bottom:0px;font-size:26px;line-height:34px;text-align:center;"><span style="font-size:48px;">fundraiser update</span></h1></td>
+</tr>
+</tbody></table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;">we like to 
+announce that we have reached our total goal + stretch goal of $1222! 
+with our original set of funds, we were able to buy:<br><br>rode psa1+ boom arms for mikeo and urodov</div><div style="text-align:center;">different boom arm for doctor the scientist</div><div style="text-align:center;">1TB Internal Solid State Drive for null<br>new vtuber form for siobhan<br>a new, functional monitor for arby<br></div></div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675196770702-dancingba.gif" width="91" style="width:16%;max-width:100%;padding:0px;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675196770702-dancingbaby.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;">with this new round we are now able to buy:</div><div style="text-align:center;">all of the supplies needed 4 arby 2 create THE NETWORK (raspberry pi based)<br>an ongoing Cable Two P.O. box for Doctor the Scientist<br>squishy epic anechoic foam panels for urodov<br>train simulator classic (german edition) for shiv</div><div style="text-align:center;"><br></div><div style="text-align:center;">thank you for all of your generous donations. <br>we are still in shock and unbelievably grateful.<br>it's genuinely heartening to see that something like this is possible<br>we love you all</div></div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675197368889-dividerca.gif" width="570" style="width:100%;max-width:100%;padding:0px;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675197368889-dividercaribbeanmove.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody><tr>
+<td width="100%" style="text-decoration:none;padding-top:15px;padding-bottom:15px;" class="container text-block"><div style="text-align:center;"><strong><span style="font-size:36px;">a list of arby's thoughts</span></strong></div></td>
+</tr>
+</tbody></table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;">rewatched <strong>TRUE STORIES</strong> the other day which is one of my favorite movies<br>i could say many things but "it is epic" and i have wild wild life stuck in my head</div></div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675199020110-MV5BZTU0M.jpg" width="342" style="width:60%;max-width:100%;padding:0px;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675199020110-MV5BZTU0MTZiOWMtOTIxMC00ZWM0LTg4MTktMzFlMjE2OGViYTJhXkEyXkFqcGdeQXVyMTY2NjY1OA%40%40._V1_.jpg">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;">recently i read <strong>LIVE CINEMA and ITS TECHNIQUES</strong> by francis ford coppola<br>which
+ i found to be a very funny book but extremely thought provoking in 
+terms of constructing visual language for live film that differentiates 
+itself between stuff like theater, classic live television, and 
+traditional cinema. i think the book is only a few years old but he is 
+accurately predicting cable two in my opinion. <br></div></div>
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;">the book also fueled my obsession with <strong>GORDON CRAIG'S</strong>
+ large modular walls, his vision for theatre design revolved around the 
+use of blank, flexible screens that could be moved and arranged for 
+different scenes. these screens, consisting of hinged and stationary 
+flats, were used to emotionally affect audiences rather than "natural 
+representations"</div><div style="text-align:center;"><br></div><div style="text-align:center;">here's his conceptual art and the final result of his innovative production of <strong>HAMLET</strong> for constantin stanislavsky at the moscow art theatre in 1912.</div></div>
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675198371964-craig-01.jpg" width="381" style="width:67%;max-width:100%;padding:0px;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675198371964-craig-01.jpg">
+</td>
+</tr>
+</tbody>
+</table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675198877808-craig-03.jpg" width="381" style="width:67%;max-width:100%;padding:0px;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675198877808-craig-03.jpg">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody><tr>
+<td width="100%" style="text-decoration:none;padding-top:15px;padding-bottom:15px;" class="container text-block"><div style="text-align:center;"><strong><span style="font-size:48px;">Ok now this is</span></strong></div></td>
+</tr>
+</tbody></table><table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:5px;margin-top:5px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<img src="web-version1_files/10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305_1675197089286-schedule.gif" width="250" style="width:44%;max-width:100%;padding:0px;border:none;display:block;" alt="10cfdc7c-9ac4-11ed-8d0a-1f69b4be0305%2F1675197089286-schedule.gif">
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;"><span style="color:rgb(255,255,255);">here's our schedule of live shows for this week:</span><br><br></div><div style="text-align:center;"><span style="color:rgb(255,255,255);"><strong>Wednesday</strong></span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">5pm - Warp Zone &nbsp;🌜</span><br><br><span style="color:rgb(255,255,255);"> </span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);"><strong>Thursday</strong></span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">4pm - Happy Lab Accidents 🧪</span><br><span style="color:rgb(255,255,255);"> </span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">8pm - EMPTY JAR (Season 2 Premiere) ⚠️ </span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">11pm - The Long Haul 🐿️</span><br><br><span style="color:rgb(255,255,255);"> </span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);"><strong>Friday</strong></span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">8pm - Trina's World 🛸</span><br><br><span style="color:rgb(255,255,255);"> </span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);"><strong>Sunday</strong></span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">5pm - Warp Zone &nbsp;🌜 </span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">8pm - Vox Urodov 📚</span></div></div>
+</td>
+</tr>
+</tbody>
+</table><table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:15px;padding-bottom:15px;">
+<div class="text-block"><div style="text-align:center;">that's about it for now!<br>we'll see you next week for more fun<br>tell your friends to subscribe or sign up<br></div><div style="text-align:center;"><span style="color:rgb(255,255,255);"><br></span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">only on / always on</span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">it's cable two</span></div><div style="text-align:center;"><span style="color:rgb(255,255,255);">💕</span></div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="background:none;">
+<td class="container">
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+<tbody>
+<tr>
+<td class="container" style="padding-top:20px;padding-bottom:10px;">
+<div class="text-block" style="font-size:11px;text-align:center;color:#313638;"><span>You received this email because you subscribed to our list. You can <a href="https://eocampaign1.com/unsubscribe?ep=-1&amp;l=%3C%3CID%3E%3E&amp;lc=%3C%3CID%3E%3E&amp;p=fe1d0cb6-9ac4-11ed-b04b-1f69b4be0305&amp;pt=campaign&amp;pv=4&amp;spa=1675263652&amp;t=1675263654&amp;s=379cffcf471abd4ddf4b90e8698c1d67c6d4188748d820f51e12de557067a0bf">unsubscribe</a> at any time.</span>
+<span><br>111 W Harbor Dr<br>San Diego<br>CA<br>92101<br>United States of America</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" class="container" align="center" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:10px;margin-top:0px;">
+<tbody>
+<tr>
+<td align="center" class="hero" style="border-collapse:collapse;border-spacing:0;margin:0;padding:0;" valign="top">
+<a href="https://eocampaign1.com/rewards?lc=%3C%3CID%3E%3E&amp;p=fe1d0cb6-9ac4-11ed-b04b-1f69b4be0305&amp;pt=campaign&amp;t=1675263654&amp;s=f7f32a3cf7edb12c844fdb0feb875d4ae93123fbb9315652f3f71eb344d7aa58" style="display:block;">
+<img src="web-version1_files/66e26967-4f4c-11e9-a3c9-06b79b628af2_1669374354711-powered-b.png" alt="Powered by EmailOctopus" width="150" style="width:150px;padding:0;border:none;display:block;">
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+
+</body></html>
