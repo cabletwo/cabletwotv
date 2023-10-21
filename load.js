@@ -5,5 +5,6 @@ $(function(){
       $("#overlay").load("https://cabletwo.net/live/videooverlay2.html");
       $("#specialheader").load("https://cabletwo.net/elements/specialheader.html");
       $("#memberpg").load("https://cabletwo.net/members/dtt2.html");
+      $("#smallhead").load("https://cabletwo.net/members/way.html");
 
 });
