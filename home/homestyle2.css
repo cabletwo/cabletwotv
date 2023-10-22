@@ -14,9 +14,9 @@ body ul, li {
 padding: 0;
 }
 
-
-#containwidth{width:700px;margin:0 auto;color:white;background-color:transparent;position:relative;}
-#line{height:30px;font-size:14px;top:0; line-height:30px; right:0;width:100%; position:relative;background-color:greenYellow;background-image:url('https://sadhost.neocities.org/images/tiles/paper.jpg');border-top: 2px solid rgb(238, 238, 238);border-bottom: 5px solid rgb(161, 161, 161);border-radius:20px; color:orange;text-decoration:none;}
+ 
+#containwidth{width:60%;margin:0 auto;color:white;background-color:transparent;position:relative;}
+#line{height:30px;font-size:14px;top:0; line-height:30px; right:0;width:100%; position:relative;background-color:greenYellow;background-image:url('https://sadhost.neocities.org/images/tiles/starsforever.gif');border-top: 2px solid rgb(255, 225, 197);border-bottom: 5px solid rgb(201, 87, 42);border-radius:20px; color:orange;text-decoration:none;}
 #partytime{height:25px;width:25px;top:2.5px;background-image:url('https://cabletwo.net/assets/minilogoo.png');position:absolute;left:4px;margin:0;}
 #links{height:30px;width:auto;position:absolute;left:37px;margin:0;font-family:'Syne Mono';color:rgb(0, 0, 0);}
 a{text-decoration:none;text-shadow:none;color:rgb(255, 255, 255);}
@@ -36,6 +36,8 @@ src: url('https://arby.party/fonts/DatdotBold-BWOJ8.ttf');
 #containwidth{width:100%;
 
 }
+
+
 }
 
 
@@ -48,7 +50,18 @@ background-color:blue;
 right:5px;
 top:2.5px;
 border-radius:25px;
-background-image: url('https://64.media.tumblr.com/af27fdf13be46778d1ad2f9b13b1a02f/4cf1f912c3ec2efc-fc/s100x200/4af83c66747c2e5a0b90c80cb024eaefbed52706.pnj');
+background-image: linear-gradient(37deg,
+    rgba(255, 0, 0, 1) 0%,
+    rgba(255, 154, 0, 1) 10%,
+    rgba(208, 222, 33, 1) 20%,
+    rgba(79, 220, 74, 1) 30%,
+    rgba(63, 218, 216, 1) 40%,
+    rgba(47, 201, 226, 1) 50%,
+    rgba(28, 127, 238, 1) 60%,
+    rgba(95, 21, 242, 1) 70%,
+    rgba(186, 12, 248, 1) 80%,
+    rgba(251, 7, 217, 1) 90%,
+    rgba(255, 0, 0, 1) 100%);
 background-size:contain;
 }
 
