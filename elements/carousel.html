@@ -10,8 +10,8 @@ body {
 
 .carousel {
   position: relative;
-  width: 775px;
-  height:90px;
+  width: 655px;
+  height:85px;
   padding: 10px 40px;
   border: 4px solid #fcd441;
   border-radius: 42px;
@@ -22,14 +22,17 @@ body {
 .carousel img {
   width: 151px;
   height: 85px;
-  padding-left: 10px;
+  padding-right: 15px;
   /* make it block to remove space around images */
   display: block;
 }
 
+.carousel img:hover { transform: scale(1.1); 
+overflow:visible;}
+
 .arrow {
   position: absolute;
-  top: 45px;
+  top: 42px;
   padding: 0;
   background: transparent;
   font-size: 24px;
@@ -37,6 +40,8 @@ body {
   display: block;
   height:24px;
   width:32px;
+  border-radius:4px;
+  border:none;
 }
 
 .arrow:focus {
@@ -44,21 +49,27 @@ body {
 }
 
 .arrow:hover {
-  background: #ccc;
-  cursor: pointer;
+ box-shadow:0px 0px 10px yellow;
 }
 
 .prev {
   left: 7px;
+  background-image:url(https://64.media.tumblr.com/8aa85d14c6579cf0432d371b8fbb1e57/2b2e73ee93f6abbb-50/s100x200/b56f47def4ec659403e6add3da7379ffb2a651c4.pnj);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .next {
   right: 7px;
+  background-image:url(https://64.media.tumblr.com/d25723575560a8b602be8ea86f62d2ba/2b2e73ee93f6abbb-7a/s100x200/733da9cd9afed461e7cda8e0396e5ee829845c2d.pnj);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .gallery {
   width: 645px;
   overflow: hidden;
+  margin-left:5px;
 }
 
 .gallery ul {
@@ -68,8 +79,6 @@ body {
   padding:0;
   list-style: none;
   transition: margin-left 250ms;
-  /* remove white-space between inline-block'ed li */
-  /* http://davidwalsh.name/remove-whitespace-inline-block */
   font-size: 0;
 }
 
@@ -87,18 +96,16 @@ body {
     <button class="arrow prev"></button>
     <div class="gallery">
       <ul>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
-        <li><img src="https://i.ytimg.com/vi/rJFv0yLLsWE/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYZSBNKFEwDw==&rs=AOn4CLATF8r6Wra99hU9TJcI-YmSIHS8MQ"></li>
+        <li><img src="https://i.ytimg.com/vi/56EU3VNuoyA/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDPLVav4v-fAFPI2NiI7qW_JPhc-A"></li>
+        <li><img src="https://i.ytimg.com/vi/IROQD3rZ-6I/maxresdefault.jpg"></li>
+        <li><img src="https://i.ytimg.com/vi/l87Sl0lj5iI/maxresdefault.jpg"></li>
+        <li><img src="https://i.ytimg.com/vi/EXd93emfdRY/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLAUBs8A87NZBVau7xaPOPUsfEgvTw"></li>
+        <li><img src="https://i.ytimg.com/vi/hudWH5Demow/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYciBYKD4wDw==&rs=AOn4CLBCbpoJTKtIR3RmXaP3VLcUJKBYaA"></li>
+        <li><img src="https://i.ytimg.com/vi/TAx2JWp3cfk/maxresdefault.jpg"></li>
+        <li><img src="https://i.ytimg.com/vi/RzKADK1HPhs/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AHUBoAC4AOKAgwIABABGFIgEyh_MA8=&rs=AOn4CLANRx2hmC2IZSIj6mcKX038ANqX-Q"></li>
+        <li><img src="https://i.ytimg.com/vi/BFrHQ1ZKrR0/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGEogGyh_MA8=&rs=AOn4CLBYhprOxAsMhFUFhhozyFP1FhtuWg"></li>
+        <li><img src="https://i.ytimg.com/vi/R2uLRfV3GMo/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGCsgEyh_MA8=&rs=AOn4CLCpYkOJvrWZUB_vV_ElN1nehho7eA"></li>
+        <li><img src="https://i.ytimg.com/vi/7cR-sLA6d2k/hqdefault.jpg"></li>
       </ul>
     </div>
     <button class="arrow next"></button>
