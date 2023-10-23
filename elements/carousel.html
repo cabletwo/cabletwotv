@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-
 <head>
   <meta charset="utf-8">
   <style>
-
 body {
   padding: 10px;
 }
-
 .carousel {
-  position:relative;
+  position: relative;
   width: 655px;
   height:85px;
   padding: 10px 40px;
@@ -17,10 +14,7 @@ body {
   border-radius: 42px;
   background: #ffb800;
   background-image: linear-gradient(#ff5400,#ffb800);
-  box-shadow:2px 3px 2px #ff5400;
-  padding:10px;
 }
-
 .carousel img {
   width: 151px;
   height: 85px;
@@ -28,10 +22,8 @@ body {
   /* make it block to remove space around images */
   display: block;
 }
-
 .carousel img:hover { transform: scale(1.1); 
 overflow:visible;}
-
 .arrow {
   position: absolute;
   top: 42px;
@@ -45,36 +37,29 @@ overflow:visible;}
   border-radius:4px;
   border:none;
 }
-
 .arrow:focus {
   outline: none;
 }
-
 .arrow:hover {
  box-shadow:0px 0px 10px yellow;
 }
-
 .prev {
   left: 7px;
   background-image:url(https://64.media.tumblr.com/8aa85d14c6579cf0432d371b8fbb1e57/2b2e73ee93f6abbb-50/s100x200/b56f47def4ec659403e6add3da7379ffb2a651c4.pnj);
   background-size: contain;
   background-repeat: no-repeat;
 }
-
 .next {
   right: 7px;
   background-image:url(https://64.media.tumblr.com/d25723575560a8b602be8ea86f62d2ba/2b2e73ee93f6abbb-7a/s100x200/733da9cd9afed461e7cda8e0396e5ee829845c2d.pnj);
   background-size: contain;
   background-repeat: no-repeat;
 }
-
 .gallery {
   width: 645px;
   overflow: hidden;
   margin-left:5px;
- 
 }
-
 .gallery ul {
   height: 85px;
   width: 9999px;
@@ -84,17 +69,12 @@ overflow:visible;}
   transition: margin-left 250ms;
   font-size: 0;
 }
-
 .gallery li {
   display: inline-block;
 }
-
-
   </style>
 </head>
-
 <body>
-
   <div id="carousel" class="carousel">
     <button class="arrow prev"></button>
     <div class="gallery">
@@ -113,7 +93,6 @@ overflow:visible;}
     </div>
     <button class="arrow next"></button>
   </div>
-
   <script>
     /* label the images, just for convenience, to visually track them */
     let i = 1;
@@ -129,9 +108,7 @@ overflow:visible;}
 
     let list = carousel.querySelector('ul');
     let listElems = carousel.querySelectorAll('li');
-
     let position = 0; // ribbon scroll position
-
     carousel.querySelector('.prev').onclick = function() {
       // shift left
       position += width * count;
@@ -139,7 +116,6 @@ overflow:visible;}
       position = Math.min(position, 0)
       list.style.marginLeft = position + 'px';
     };
-
     carousel.querySelector('.next').onclick = function() {
       // shift right
       position -= width * count;
@@ -148,6 +124,5 @@ overflow:visible;}
       list.style.marginLeft = position + 'px';
     };
   </script>
-
 </body>
 </html>
