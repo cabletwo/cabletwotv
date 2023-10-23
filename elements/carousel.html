@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+
+body {
+  padding: 10px;
+}
+
+.carousel {
+  position: relative;
+  width: 775px;
+  padding: 10px 40px;
+  border: 4px solid #fcd441;
+  border-radius: 42px;
+  background: #eee;
+  background-image: linear-gradient(#ff5400,#ffb800);
+}
+
+.carousel img {
+  width: 151px;
+  height: 85px;
+  /* make it block to remove space around images */
+  display: block;
+}
+
+.arrow {
+  position: absolute;
+  top: 60px;
+  padding: 0;
+  background: #ddd;
+  border-radius: 15px;
+  border: 1px solid gray;
+  font-size: 24px;
+  line-height: 24px;
+  color: #444;
+  display: block;
+}
+
+.arrow:focus {
+  outline: none;
+}
+
+.arrow:hover {
+  background: #ccc;
+  cursor: pointer;
+}
+
+.prev {
+  left: 7px;
+}
+
+.next {
+  right: 7px;
+}
+
+.gallery {
+  width: 390px;
+  overflow: hidden;
+}
+
+.gallery ul {
+  height: 151px;
+  width: 9999px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: margin-left 250ms;
+  /* remove white-space between inline-block'ed li */
+  /* http://davidwalsh.name/remove-whitespace-inline-block */
+  font-size: 0;
+}
+
+.gallery li {
+  display: inline-block;
+}
+
+
+  </style>
+</head>
+
+<body>
+
+  <div id="carousel" class="carousel">
+    <button class="arrow prev">⇦</button>
+    <div class="gallery">
+      <ul>
+        <li><img src="https://en.js.cx/carousel/1.png"></li>
+        <li><img src="https://en.js.cx/carousel/2.png"></li>
+        <li><img src="https://en.js.cx/carousel/3.png"></li>
+        <li><img src="https://en.js.cx/carousel/4.png"></li>
+        <li><img src="https://en.js.cx/carousel/5.png"></li>
+        <li><img src="https://en.js.cx/carousel/6.png"></li>
+        <li><img src="https://en.js.cx/carousel/7.png"></li>
+        <li><img src="https://en.js.cx/carousel/8.png"></li>
+        <li><img src="https://en.js.cx/carousel/9.png"></li>
+        <li><img src="https://en.js.cx/carousel/10.png"></li>
+        <li><img src="https://en.js.cx/carousel/1.png"></li>
+        <li><img src="https://en.js.cx/carousel/2.png"></li>
+        <li><img src="https://en.js.cx/carousel/3.png"></li>
+        <li><img src="https://en.js.cx/carousel/4.png"></li>
+        <li><img src="https://en.js.cx/carousel/5.png"></li>
+        <li><img src="https://en.js.cx/carousel/6.png"></li>
+        <li><img src="https://en.js.cx/carousel/7.png"></li>
+        <li><img src="https://en.js.cx/carousel/8.png"></li>
+        <li><img src="https://en.js.cx/carousel/9.png"></li>
+        <li><img src="https://en.js.cx/carousel/10.png"></li>
+      </ul>
+    </div>
+    <button class="arrow next">⇨</button>
+  </div>
+
+  <script>
+    /* label the images, just for convenience, to visually track them */
+    let i = 1;
+    for(let li of carousel.querySelectorAll('li')) {
+      li.style.position = 'relative';
+      li.insertAdjacentHTML('beforeend', `<span style="position:absolute;left:0;top:0">${i}</span>`);
+      i++;
+    }
+
+    /* configuration */
+    let width = 130; // image width
+    let count = 3; // visible images count
+
+    let list = carousel.querySelector('ul');
+    let listElems = carousel.querySelectorAll('li');
+
+    let position = 0; // ribbon scroll position
+
+    carousel.querySelector('.prev').onclick = function() {
+      // shift left
+      position += width * count;
+      // can't move to the left too much, end of images
+      position = Math.min(position, 0)
+      list.style.marginLeft = position + 'px';
+    };
+
+    carousel.querySelector('.next').onclick = function() {
+      // shift right
+      position -= width * count;
+      // can only shift the ribbbon for (total ribbon length - visible count) images
+      position = Math.max(position, -width * (listElems.length - count));
+      list.style.marginLeft = position + 'px';
+    };
+  </script>
+
+</body>
+</html>
