@@ -15,9 +15,9 @@ body ul, li {
 }
 
 
-a:link{color:aqua;}
-    a:visited{color:aqua;}
-    a:hover{color:aqua;}
+a:link{color:black;}
+    a:visited{color:black;}
+    a:hover{color:black;}
     #footdivider{width:600px;height:30px;background-image:url('https://web.archive.org/web/20090902000407/http://www.geocities.com/rangers_ranch/Swimmer_border2.gif');}
     @media only screen and (max-width: 600px) {
    #footdivider{display:none;}
