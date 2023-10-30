@@ -123,7 +123,7 @@ height: auto;
 		rgba(0,0,0,0.8) 70%);
 	width: 300px;
    	border-radius:10px;
-   	box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+   	box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double #fbbe3e;
 	padding-bottom: 10px;
 	background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
 
@@ -170,7 +170,7 @@ height: auto;
 		rgba(0,0,0,0.8) 70%);
 	width:  656px;
    border-radius:10px;
-  box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+  box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double #fbbe3e;
   padding: 2rem 3rem;
   background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
 }
@@ -245,7 +245,7 @@ height: auto;
 		rgba(0,0,0,0.8) 70%);
 	width: 300px;
    	 border-radius:10px;
-   	box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+   	box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double #fbbe3e;
    	background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
 }
 
@@ -333,7 +333,7 @@ height: auto;
     max-width: 100%;
     overflow: hidden;
      border-radius:10px;
-    box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+    box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double #fbbe3e;
     background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
   
 }
@@ -345,7 +345,7 @@ height: auto;
     max-width: 100%;
     overflow: hidden;
      border-radius:10px;
-    box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double white;
+    box-shadow: 6px 6px rgba(0,0,0,0.3);border:5px double #fbbe3e;
 background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
 }
 
