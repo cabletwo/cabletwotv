@@ -90,7 +90,7 @@ background-size:cover;
   justify-content: center;
     }
     
-    .flex-items:nth-child(1) {
+    .flex-item:nth-child(1) {
   display: block;
   flex-grow: 0;
   flex-shrink: 1;
@@ -106,7 +106,7 @@ background-size:cover;
   transition: all .2s ease-in-out; 
 }
 
-.flex-items:nth-child(2) {
+.flex-item:nth-child(2) {
   display: block;
   flex-grow: 0;
   flex-shrink: 1;
@@ -122,7 +122,7 @@ background-size:cover;
   transition: all .2s ease-in-out; 
 }
 
-.flex-items:nth-child(3) {
+.flex-item:nth-child(3) {
   display: block;
   flex-grow: 0;
   flex-shrink: 1;
@@ -138,7 +138,7 @@ background-size:cover;
   transition: all .2s ease-in-out; 
 }
 
-.flex-items:nth-child(4) {
+.flex-item:nth-child(4) {
   display: block;
   flex-grow: 0;
   flex-shrink: 1;
@@ -154,7 +154,7 @@ background-size:cover;
   transition: all .2s ease-in-out; 
 }
 
-.flex-items:nth-child(5) {
+.flex-item:nth-child(5) {
   display: block;
   flex-grow: 0;
   flex-shrink: 1;
@@ -169,7 +169,7 @@ background-size:cover;
   background-position:center;
   transition: all .2s ease-in-out; 
 }
-.flex-items:hover{
+.flex-item:hover{
   transform: scale(1.1); 
 
 }
@@ -374,11 +374,11 @@ setInterval(showDateTime, 1000);
     
 
    <div class="flex-container">
-   <div class="flex-items"></div>
-   <div class="flex-items"></div>
-   <div class="flex-items"></div>
-   <div class="flex-items"></div>
-   <div class="flex-items"></div>
+   <div class="flex-item"></div>
+   <div class="flex-item"></div>
+   <div class="flex-item"></div>
+   <div class="flex-item"></div>
+   <div class="flex-item"></div>
    
    </div>
 	
@@ -398,7 +398,17 @@ setInterval(showDateTime, 1000);
     Your browser does not support the <code>audio</code> element.
 </audio>
 
-    
+<audio id="hoverSound" src="http://cabletwo.net/assets/ancientfreeorange.mp3?raw=true"></audio>
+<script>
+var flexItems = document.querySelectorAll('.flex-container .flex-item');
+var hoverSound = document.getElementById('hoverSound');
+
+flexItems.forEach(function(flexItem) {
+    flexItem.addEventListener('mouseover', function() {
+        hoverSound.play();
+    });
+});
+</script>
     
   </body>
 </html>
