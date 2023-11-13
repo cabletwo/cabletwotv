@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>It's Cable Two</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>It's Cable Two</title>
+
+<meta charset="utf-8"/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+			  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+			  crossorigin="anonymous"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style> #orange {
+    transition: transform 0.2s;
+}
+
+#orange:hover {
+    transform: scale(1.1);
+    left:0;
+}
+</style>
+</head>
+<body>
+<img id="orange" src="https://www.pngall.com/wp-content/uploads/2016/05/Orange-Free-PNG-Image.png" height="100px" onclick="playSound()">
+<audio id="sound" src="http://cabletwo.net/assets/ancientfreeorange.mp3?raw=true"></audio>
+<script>
+function playSound() {
+    var sound = document.getElementById("sound");
+    sound.play();
+}
+</script>
+</body>
