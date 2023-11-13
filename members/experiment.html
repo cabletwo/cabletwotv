@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+
+        
+      @font-face {
+  font-family: "BlackberryMassacre";
+  src: url('https://cabletwo.net/assets/BlackberryMassacre-LWAn.ttf');}
+h2{
+    font-family:'BlackberryMassacre'; margin:0;font-size:40px;color:black;
+}
+a{color:black;}
+        .staff-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .staff-member {
+            flex-basis: 100%;
+            margin: 3px;
+            padding: 3px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 15px;
+  background-image:linear-gradient(#fcdf45,#fbc040);
+  border: 2px dotted black;
+        }
+
+        .staff-member h3 {
+            margin: 0; font-family: helvetica; font-size: 15px;
+        }
+
+        .staff-member p {
+            display: none;
+        }
+
+        .staff-member.active p {
+            display: block;
+            background-color: black;
+            color:white;
+            font-size:14px;
+        }
+
+        @media (min-width: 600px) {
+            .staff-member {
+                flex-basis: 30%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="staff-grid">
+        <div class="staff-member" onclick="toggleBio(this)">
+            <h2><a href="https://www.imdb.com/name/nm12296480/" target="_blank" rel="noopener">Drazza</a></h2>
+            <h3>"Gumby Girl"</h3><h3>Director / Host of Coffee.Sip</h3>
+            <p> Drazza is the host and producer of the popular coffee-themed talk show, coffee.sip, on Cable Two. With a passion for all things coffee, Drazza brings her enthusiasm and expertise to the show, exploring the wide world of tiers, ziggy, and sharing her love of the beloved beverage with her viewers.
+                <p>
+                In addition to hosting coffee.sip, Drazza is also a talented artist and performer, known for her work as a member of the Rev Girls, Cable Two's (500) Dogs of Summer and her collaboration with Sheda on Under the Hat. With her diverse range of skills and interests, Drazza is a valuable asset to the Cable Two team and a beloved member of the community.</p>
+        </div>
+        <div class="staff-member" onclick="toggleBio(this)">
+            <h2><a href="https://warpzone.site" target="_blank" rel="noopener">Null</a></h2>
+            <h3>"Resident Computer Genius"</h3><h3>Director / Host of Warp Zone</h3>
+            <p>  Nullcasting is a computer wizard and the host of Warp Zone, a popular video game streaming show on Cable Two. With their vast knowledge of all things gaming and their sharp wit, Nullcasting has gained a loyal following of fans who tune in every week to see them play the latest and greatest games.
+                <p>
+                In addition to their work on Warp Zone, Nullcasting is also the co-host of Are You Not Edutained?, a show that investigates the world of edutainment abandonware. With their keen eye for nostalgia and their love of all things retro, Nullcasting brings a unique and entertaining perspective to the show.
+                Outside of their work on Cable Two, Nullcasting is also a skilled programmer and CGI artist, always looking for new ways to push the boundaries of what is possible with technology.</p>
+        </div>
+        <div class="staff-member" onclick="toggleBio(this)">
+            <h2><a href="https://www.mikeodyllan.com/" target="_blank" rel="noopener">MikeO</a></h2>
+            <h3>"It's A Mike Thing"</h3><h3>Producer / Host of Multiverse</h3>
+            <p>Known for his quick wit and boundless energy, MikeO brings a touch of absurdity and levity to every episode of Multiverse. Whether he's cracking jokes, reading tarot cards, or diving into the weird and wacky corners of the internet, MikeO is always up for a good time.
+                <p>
+                But don't be fooled by his epic #joker exterior - beneath the jokes and antics, MikeO is a seasoned actor, artist and performer with a deep love for creative collaboration. In addition to his work in fashion and lifestyle magazines, he is known for his scriptwriting and creative fiction, as well as his comedic dating simulator, Mikeo Miami: Mikkaio no ainotameni. MikeO brings a wealth of experience and versatility to the table, and is always looking for new and exciting ways to explore the Multiverse.</p>
+        </div>
+
+
+        <div class="staff-member" onclick="toggleBio(this)">
+            <h2><a href="https://arby.party" target="_blank" rel="noopener">Arby</a></h2>
+            <h3>Host</h3><h3>Director / Host of Coffee.Sip</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="staff-member" onclick="toggleBio(this)">
+            <h2><a href="https://twitter.com/asterkallium" target="_blank" rel="noopener">Dana</a></h2>
+            <h3>"Your Friendly Neigborhood Biohazard"</h3><h3>Producer/Roommate/Host of Happy Lab Accidents</h3>
+            <p> Concept and conceptual artist with a taste for the "fuck yeah," intrigued by experimentation of all kinds. 6th Grade '08/'09 Spelling Bee Champion.</p>
+        </div>
+        <div class="staff-member" onclick="toggleBio(this)">
+            <h2><a href="https://roadgaunt.carrd.co/" target="_blank" rel="noopener">Jaunt</a></h2>
+            <h3>"Human After All"
+            </h3><h3>Editor / Visual Magician</h3>
+            <p>Creative Commons enthusiast. Editor for <a href="https://cabletwo.net/youtube">Cable Two Highlights.</a> Facilitates new projects by translating ideas into cool stuff. Work-horse programs include Photoshop, Lightroom, OBS, After Effects, Premiere Pro, Davinci Resolve, Blender, Cinema4D, ZBrush, 123D Design, Meshmixer, Fusion 360, PrusaSlicer, Cura, Audacity, and Obsidian. Creatively diverse except when writing self-summaries in third person.</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleBio(element) {
+            element.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
