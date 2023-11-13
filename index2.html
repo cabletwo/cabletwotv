@@ -22,19 +22,20 @@
 }
    
     .television{
-       height:96.5%;
+       height:90%;
        width:90%;
        left:5%;
        position:absolute;
        align:center;
-       border-radius: 40px 40px 0px 0px;
+       border-radius: 40px;
      background-color:black;
      margin:auto 0;
-       bottom:0%;
+       bottom:5%;
     background-image:url('https://64.media.tumblr.com/6175ffe19611d03c3b7add394f25dbd9/ce66ea26edfe16e0-33/s2048x3072/e5ecbb92e47634fcb01779e73090dea8248e25bc.pnj');
 background-size:cover;
     overflow:hidden;
     box-shadow:inset 0px 0px 20px #e19501;
+    transform: rotate(-0.005turn);
     }
     .rainbowborder{
       background-image:url('https://sadhost.neocities.org/images/tiles/Warning.jpg');
@@ -68,6 +69,7 @@ background-size:cover;
        width:100%;
        position:absolute;
        align:center;
+       right:0.1%;
      background-color:#FFC700;
      background-image:linear-gradient(#FFC700, #e19501);
      margin:auto 0;
@@ -81,7 +83,7 @@ background-size:cover;
   align-content: normal;
   overflow: hidden;
   box-shadow: 0px 0px 10px goldenrod;
-  transform: rotate(0.003turn);
+  transform: rotate(0.005turn);
 
   justify-content: center;
     }
@@ -171,24 +173,7 @@ background-size:cover;
 }
 /* rainbow ticker */
 
-#marquee {
-	background-image: linear-gradient(37deg,
-        rgba(255, 0, 0, 1) 0%,
-        rgba(255, 154, 0, 1) 10%,
-        rgba(208, 222, 33, 1) 20%,
-        rgba(79, 220, 74, 1) 30%,
-        rgba(63, 218, 216, 1) 40%,
-        rgba(47, 201, 226, 1) 50%,
-        rgba(28, 127, 238, 1) 60%,
-        rgba(95, 21, 242, 1) 70%,
-        rgba(186, 12, 248, 1) 80%,
-        rgba(251, 7, 217, 1) 90%,
-        rgba(255, 0, 0, 1) 100%);
-        opacity:80%;
-       
-}
-
-.ticker {  transform: rotate(0.003turn);
+.ticker {  transform: rotate(0.005turn);
 	 opacity:100%;
 	font-size: 8px;
 	font-family: 'Syne Mono', serif;
@@ -196,9 +181,9 @@ background-size:cover;
 	overflow: hidden;
 	position: absolute;
 	line-height:20px;
-	bottom:24%;
-	width:90%;
-  left:5%;
+	bottom:25%;
+	width:100%;
+  left:0%;
 	background-image: linear-gradient(37deg,
         rgba(255, 0, 0, 1) 0%,
         rgba(255, 154, 0, 1) 10%,
@@ -268,7 +253,7 @@ background-size:cover;
   
   .thetime{height:100%;width:20%;right:1%;position:absolute;z-index:200;vertical-align:middle;top:30%;margin:auto;text-align:right;} 
   
-  .ooo{  transform: rotate(0.003turn);bottom:19.1%;height:auto;width:auto;position:absolute;z-index:1000;background-color:transparent;}
+  .ooo{  background-color:blue;transform: rotate(0.003turn);bottom:19.1%;height:100px;width:auto;position:absolute;z-index:1000;background-color:transparent;}
   .ooo2{top:18.9%;height:auto;width:100%;position:absolute;z-index:1000;background-color:transparent;}
   
   .circley{top:20%;margin:0;height:auto;width:auto;position:absolute;z-index:1000;background-color:transparent;
@@ -329,7 +314,7 @@ setInterval(showDateTime, 1000);
     </div>
     
     
-	<div class="circley"><a href="https://cabletwo.net/home/"><img src="https://64.media.tumblr.com/e6149fe8e1bf2b8f33717fdee87ed8d0/5a70a7858153c255-ea/s1280x1920/119fc5b9ea1285ec6d233ce0cb70ecb4a30e086e.pnj" height="400px"></a></div>
+	<div class="circley"><a href="https://cabletwo.net/home/"> </a></div>
 
   
     
@@ -343,16 +328,19 @@ setInterval(showDateTime, 1000);
    
    </div>
 	
-   </div>
-    
-     <div id="marquee"> 
+   <div id="marquee"> 
 		<div class="ticker"><p>Awooo, Cable Dog! Click the logo to enter, or choose your channel to experience the Cable Renaissance from your own computer!</p></div>
 	</div>
   
 
+   </div>
+    
+    
+  
+
  <audio autoplay loop hidden id="Feeling">
-    <source src="/cabletwotv/assets/together.mp3">
-    <source src="/cabletwotv/assets/together.ogg">
+    <source src="cabletwo.net/assets/together.mp3">
+    <source src="cabletwo.net/assets/together.ogg">
     Your browser does not support the <code>audio</code> element.
 </audio>
 
