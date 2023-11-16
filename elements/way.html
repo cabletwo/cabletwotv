@@ -116,7 +116,7 @@ margin:0 auto;
 
 <div id="containwidth">
  <div id="line">
- <div id="partytime"><a href="https://cabletwo.net/home"><img src="https://64.media.tumblr.com/e39672bf390802c31a0e528f08756f50/bac4dde5e61ae095-7b/s1280x1920/9e3f7a21529d41589b5351f3276d154536ec5024.pnj" height=25px;></a></div>
+ <div id="partytime"><a id="myLink" href="#"><img src="https://64.media.tumblr.com/e39672bf390802c31a0e528f08756f50/bac4dde5e61ae095-7b/s1280x1920/9e3f7a21529d41589b5351f3276d154536ec5024.pnj" height=25px;></a></div>
  <div id="links">
  <a href="https://twitch.tv/cabletwo">Watch Live <span style="color:red;">●</span></a> | 
  <a href="https://cabletwo.net/info">Info</a> | 
@@ -138,5 +138,20 @@ margin:0 auto;
 </div>
  </center>
  <br>
+
+
+
+ <script>window.onload = function() {
+  var link = document.getElementById('myLink');
+  link.onclick = function() {
+      if(window.innerWidth > 768) {
+          window.location.href = 'http://cabletwo.net/home';
+      } else {
+          window.location.href = 'http://cabletwo.net/home';
+      }
+      return false;
+  };
+};
+</script>
   </body>
 </html>
