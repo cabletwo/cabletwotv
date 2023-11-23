@@ -185,6 +185,12 @@ line-height: 18px;
 font-family:'Syne Mono';
 text-align: center;}
 
+#colors div:hover{
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+
 @media only screen and (max-width: 1300px) {
    #arrow{display:none;}
    #links { position:absolute;}
@@ -271,9 +277,28 @@ text-align: center;}
 
 <div id="arrow">
   <div id="connect">
- <img src="https://64.media.tumblr.com/649127ce53053edceb8a1666091154e5/a9f72ebc0f834e6e-84/s2048x3072/15b150b1e6e77e686a4944f86dee9497868be556.pnj" width="200">
+ <img src="https://64.media.tumblr.com/9836409850a93ebff460b41b826124a8/bc86be6f46ae39dc-c8/s2048x3072/26fc7b3b9fd53a44aaded6ec851c085ecce77748.pnj" width="200">
 </div>
 </div>
+
+
+
+<audio id="hoverSound" src="http://cabletwo.net/assets/beep1.mp3?raw=true"></audio>
+<script>
+var colorItems = ['red', 'yellow', 'green', 'blue', 'purple',];
+var hoverSound = document.getElementById('hoverSound');
+
+colorItems.forEach(function(colorItem) {
+    var item = document.getElementById(colorItem);
+    item.addEventListener('mouseover', function() {
+        hoverSound.play();
+    });
+});
+</script>
+
+
+
+
 
 
 </body>
