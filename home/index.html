@@ -71,11 +71,12 @@ border-top: 4px solid #fcd441;
 
 #arrow{
 position:absolute;
-height:300px;
-width:400px;
+height:50px;
+width:50px;
 left:-100px;
-bottom:101px;
+bottom:0px;
 background-size:cover;
+transform: rotate(-20deg);
 background-image: url('https://64.media.tumblr.com/2faa7b5ababd83aec5d1a92950bbb951/b0d87842664df091-c0/s1280x1920/07e299bfe0deb0dc776c5b6159ce7753b11d7442.pnj');
 }
 
@@ -184,27 +185,23 @@ right:160px;
 #ball {}
 #disco {height:auto;width:auto; bottom:166px;left:230px;position:absolute;transform:rotate(4deg);}
 #linx { 
-position:relative;
-height:20px;
-width:700px;
-margin: auto 0;
-bottom:160px;
-color:black;
-font-size: 14px;
-line-height: 18px;
-font-family:'Syne Mono';
-text-align: center;}
+  position: absolute;
+    height: 20px;
+    width: 700px;
+    left: 50%;  /* Add this */
+    transform: translateX(-50%);  /* Add this */
+    bottom: 140px;
+    color: black;
+    font-size: 14px;
+    line-height: 18px;
+    font-family: 'Syne Mono';
+    text-align: center;}
 
 #colors div:hover{
     transform: scale(1.1);
     transition: transform 0.3s ease-in-out;
 }
 
-
-@media only screen and (max-width: 1300px) {
-   #arrow{display:none;}
-   #links { position:absolute;}
-  }
 
   @media only screen and (max-width: 1200px) {
    #schedbox{display:none;}
@@ -262,7 +259,11 @@ text-align: center;}
       <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FChicago&amp;mode=AGENDA&amp;showNav=0&amp;showDate=0&amp;showTitle=0&amp;showCalendars=0&amp;showTabs=0&amp;showPrint=0&amp;src=ZDM0OWQ4YjlhZWQ1MDVlZjQwMmMzMDc5M2ZiYjgzODFlN2MyYzM1ZGZjN2QxNzZjOGY2MjhhODk0ZWZhNDQ2MUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23D50000"  width="200" height="290" frameborder="0" scrolling="no"></iframe>
       </div>
 
-
+      <div id="arrow">
+        <div id="connect">
+       <img src="https://64.media.tumblr.com/9836409850a93ebff460b41b826124a8/bc86be6f46ae39dc-c8/s2048x3072/26fc7b3b9fd53a44aaded6ec851c085ecce77748.pnj" width="200">
+      </div>
+      </div>
   
       <div id="linx">
         Follow us on:
@@ -283,14 +284,10 @@ text-align: center;}
     <div id="carousel"></div>
     <br>
     <div id="footer"></div>
-</div>
 
-<div id="arrow">
-  <div id="connect">
- <img src="https://64.media.tumblr.com/9836409850a93ebff460b41b826124a8/bc86be6f46ae39dc-c8/s2048x3072/26fc7b3b9fd53a44aaded6ec851c085ecce77748.pnj" width="200">
+   
+    
 </div>
-</div>
-
 
 
 <audio id="hoverSound" src="http://cabletwo.net/assets/beep1.mp3?raw=true"></audio>
