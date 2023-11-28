@@ -183,7 +183,7 @@ body{
 
 <div id=menu>
     
-    <a href="https://cabletwo.net/home/"><div id=enter>enter</div></a>
+    <a id="myLink"><div id=enter>enter</div></a>
     <div id=possibilities>a television network<br>exploring the possibilities<br>of live video as a medium</div>
     
      
@@ -205,6 +205,18 @@ body{
     </div> 
 
 <div id="footer"></div> 
+
+
+<script type="text/javascript">
+    document.getElementById('myLink').onclick = function() {
+        if(window.innerWidth <= 900) {
+            window.location.href = "http://cabletwo.net/home/index2";
+        } else {
+            window.location.href = "http://cabletwo.net/home/";
+        }
+    }
+</script>
+
  
 </body>
 </html> 
