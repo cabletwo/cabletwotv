@@ -389,11 +389,11 @@ setInterval(showDateTime, 1000);
   <iframe name="myFrame" style="width:100%; height:63%; border:none;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" src="https://arby.party/blog/entries/" ></iframe>
 
    <div class="flex-container">
-   <div class="flex-item"><a target="myFrame" href="https://www.google.com">Google</a></div>
-   <div class="flex-item"><a target="myFrame" href="https://www.google.com">Google</a></div>
-   <div class="flex-item"><a target="myFrame" href="https://cabletwo.net/live/">Google</a></div>
-   <div class="flex-item"><a target="myFrame" href="https://www.google.com">Google</a></div>
-   <div class="flex-item"><a target="myFrame" href="https://www.google.com">Google</a></div>
+   <div class="flex-item"><a target="myFrame" href="https://www.google.com" data-src="https://www.yahoo.com">Google</a></div>
+   <div class="flex-item"><a target="myFrame" href="https://www.google.com" data-src="https://www.yahoo.com">Google</a></div>
+   <div class="flex-item"><a target="myFrame" href="https://cabletwo.net/live/" data-src="https://www.yahoo.com">Google</a></div>
+   <div class="flex-item"><a target="myFrame" href="https://www.google.com" data-src="https://www.yahoo.com">Google</a></div>
+   <div class="flex-item"><a target="myFrame" href="https://www.google.com" data-src="https://www.yahoo.com">Google</a></div>
    
    </div>
 	
@@ -418,6 +418,19 @@ flexItems.forEach(function(flexItem) {
         hoverSound.play();
     });
 });
+</script>
+
+
+
+<script>
+var links = document.querySelectorAll('.flex-container .flex-item a');
+var iframe = document.getElementById('myFrame');
+
+for (var i = 0; i < links.length; i++) {
+  links[i].addEventListener('mouseover', function() {
+    iframe.src = this.dataset.src;
+  });
+}
 </script>
     
   </body>
