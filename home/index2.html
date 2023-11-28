@@ -6,20 +6,9 @@
 
 <meta charset="utf-8"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<meta charset="utf-8"/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
 			  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
 			  crossorigin="anonymous"></script>
-
-        <script type="text/javascript">
-          window.onload = function() {
-              if(window.innerWidth < 900) {
-                  window.location.href = "http://cabletwo.net/home/index/";
-              }
-          }
-      </script>
-      
-
 
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap" rel="stylesheet">
@@ -33,283 +22,158 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
-<link rel="stylesheet" href="https://cabletwo.net/home/homestyle2.css">
-<script src="/load.js"></script>
-
-<style>
-
-#middlebox{
-width:1400px;
-height:600px;
-margin:0 auto;
-position:relative;
-background-color: transparent;
-
-overflow:hidden;
-display: block;
-left:0;
-border-radius: 20px;
-background-image: url('https://64.media.tumblr.com/f988c9005214c5524efe34352493d995/ce66ea26edfe16e0-43/s2048x3072/2dded781794cb89c74f902e7220ad0491251c3f5.pnj');
-}
-
-a {
-  color: aqua;
-}
-
-#bottombox{
-width:100%;
-height:240px;
-bottom:0px;
-margin:0;
-position:absolute;
-background-image: linear-gradient(#fbbe3e,#fddf45);
-padding-top:20px;
-overflow:hidden;
-left:0;
-border-top: 4px solid #fcd441;
-}
-
-#arrow{
-position:absolute;
-height:300px;
-width:400px;
-left:-100px;
-bottom:101px;
-background-size:cover;
-background-image: url('https://64.media.tumblr.com/2faa7b5ababd83aec5d1a92950bbb951/b0d87842664df091-c0/s1280x1920/07e299bfe0deb0dc776c5b6159ce7753b11d7442.pnj');
-}
-
-#palette{
-position: relative;
-margin: auto 0;
-width:1400px;
-height:100%;
-top:0px;
-background-image:url('https://64.media.tumblr.com/af769f51c60984fe6e5bea66d3b32210/354d16336cad3017-4d/s2048x3072/7976e14665354b67e9e59b85821e1710de424cbe.pnj');
-background-size:contain;
-background-repeat: no-repeat;
-
-border-radius:20px;
-box-shadow: inset 0px 0px 10px rgb(165, 88, 58);}
-
-
-#schedbox{
-
-position:absolute;
-margin: auto 0;
-width: auto;
-height:auto;
-padding: 25px;
-background-color:red;
-background-image: url('https://64.media.tumblr.com/a01bab0795fd7d18443bd82b17fc5e3f/360bd8fe8bb9cae0-a1/s500x750/9329beaee1972fef653a8f6d0ba379025bd720ac.pnj');
-background-size: contain;
-background-repeat: no-repeat;
-top:80px;
-right:160px;
-}
-
-
-#colors {}
-#red {
-    position:relative;
-    top:85px;
-    left:-160px;
-    margin: auto;
-    text-align: center;
-}
-#yellow {
-  position:relative;
-    top:-37px;
-    left:-3px;
-    margin: auto;
-    text-align: center;
-    transform: rotate(0deg);
-}
-#green {
-  position:relative;
-    top:-98px;
-    left:140px;
-    margin: auto;
-    text-align: center;
-    transform: rotate(10deg);
-}
-#blue {
-  position:relative;
-    top:-102px;
-    left:160px;
-    margin: auto;
-    text-align: center;
-}
-#purple {
-  position:relative;
-    top:-140px;
-    left:35px;
-    margin: auto;
-    text-align: center;
-}
-
-
-#connect {
-  position:relative;
-    top:100px;
-    left:0px;
-    margin: auto;
-    text-align: center;
-}
-
-#enter {
-  position:relative;
-    top:-342px;
-    left:10px;
-    margin: auto;
-    text-align: center;
-    transform: rotate(4deg);
-}
-
-#logo {
-  position:relative;
-    top:-348px;
-    left:-100px;
-    margin: auto;
-    text-align: center;
-}
-
-#free {
-  position:relative;
-    top:-590px;
-    right:-650px;
-    margin: auto;
-    text-align: center;
-}
-#ball {}
-#disco {height:auto;width:auto; bottom:166px;left:230px;position:absolute;transform:rotate(4deg);}
-#linx { 
-position:relative;
-height:20px;
-width:700px;
-margin: auto 0;
-bottom:160px;
-color:black;
-font-size: 14px;
-line-height: 18px;
-font-family:'Syne Mono';
-text-align: center;}
-
-#colors div:hover{
-    transform: scale(1.1);
-    transition: transform 0.3s ease-in-out;
-}
-
-
-@media only screen and (max-width: 1300px) {
-   #arrow{display:none;}
-   #links { position:absolute;}
-  }
-
-  @media only screen and (max-width: 1200px) {
-   #schedbox{display:none;}
-   #palette {background-image:url('https://64.media.tumblr.com/2b13e1e1209deff1d53be30249790735/8053e35ab7c78f10-fa/s2048x3072/7122195004ab5cf8c0acb5ac773cc1c5582ddf16.pnj');}
-  #linx{left:0;}
-}
-
-@media only screen and (max-width: 900px) {
-   #footdivider{display:none;}
-
-  }
-</style>
-
+<link rel="stylesheet" href="https://cabletwo.net/home/mobilestyle.css">
+<script src="/load.js"></script> 
 </head> 
 
 <body>
-    
-
-<div class="spacer"></div> <!--- horizontal spacer consistent thru page --->
-<center><img src="https://64.media.tumblr.com/c737d80c6afce26c88ef728998cdbc35/1593030870d22bfa-1c/s1280x1920/9c3ddbc649ae2a943738cc17d0fb9547a36e7241.pnj"></center>
-
-
+<br>
 <div id="header"></div>
 
-
-
-
-<div id="middlebox">
-
-
-   <div id="palette">
-    
-    
-
- <div id="colors"></div>
-    <div id="red"><a href="https://cabletwo.bigcartel.com/"><img src="https://64.media.tumblr.com/bffd2c223393aa7ea371f8f01c10fa96/0a093f23428e0831-ca/s1280x1920/c0c8a4dc9db5e02765c4f0a717d4a69555e54fdb.pnj" width="170"></a></div>
-    <div id="yellow"><a href="https://cabletwo.net/highlights/"><img src="https://64.media.tumblr.com/c34c71b5d4ae54d08386ccc5cfbb574e/50fcbd562e96683e-c1/s1280x1920/b17038bc91a7a4cb7c02ab70c409e6229e53cf89.pnj" width="140"></a></div>
-    <div id="green"><a href="https://cabletwo.tv/"><img src="https://64.media.tumblr.com/46f44bf442ac83d121e9152ff24197c5/762f0c000a2a8d52-d5/s1280x1920/26fd1f6ce82fe6de64ae623f95631ac3e93c81b7.pnj" width="170"></a></div>
-    <div id="blue"><a href="https://cabletwo.net/pitch/"><img src="https://64.media.tumblr.com/e7581ee0b310e3616345e9910550c6f3/7c87c0ff6439dddb-5e/s1280x1920/2c8c4bb0d3739a65a85e36d13920ebfc4e326783.pnj" width="170"></a></div>
-    <div id="purple"><a href="tel:+1-323-484-6515"><img src="https://64.media.tumblr.com/44a479813b648f4fd2f3f1e1e2520308/239b861791892b91-1c/s1280x1920/df4143ec518d2d95fe771ab7345ea0ad451d446b.pnj" width="170"></a></div>
-    <div id="enter"><a href="https://"><img src="https://64.media.tumblr.com/cd1c841d8105ee9ce2544b17c7693f0b/0c58186d1121e7b9-f9/s2048x3072/b39e85a7ea6bf847c614411b7350d126d96bdc78.pnj" width="190"></a></div>
-    <div id="logo"><a href=""><img src="https://64.media.tumblr.com/e6149fe8e1bf2b8f33717fdee87ed8d0/5a70a7858153c255-ea/s1280x1920/119fc5b9ea1285ec6d233ce0cb70ecb4a30e086e.png" width="90"></a></div>
- 
- 
-  </div>
-    
-  <div id="free">
-  <iframe src="https://cabletwo.net/elements/afo" width="150" height="150" scrolling="no" style="overflow:hidden;border:none;">
-  </iframe></div>
-
-    <div id="disco"><a href="https://discord.gg/tGdpxnK"><img src="https://64.media.tumblr.com/4c2b13a9041acc3dc4012948430eaf10/a4a67b9fad956616-e0/s2048x3072/6ad6418eed6be3197048990c3db8ba7f985cdf92.pnj" width="250"></a></div>
-
-
-    <div id="schedbox">
-      <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FChicago&amp;mode=AGENDA&amp;showNav=0&amp;showDate=0&amp;showTitle=0&amp;showCalendars=0&amp;showTabs=0&amp;showPrint=0&amp;src=ZDM0OWQ4YjlhZWQ1MDVlZjQwMmMzMDc5M2ZiYjgzODFlN2MyYzM1ZGZjN2QxNzZjOGY2MjhhODk0ZWZhNDQ2MUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23D50000"  width="200" height="290" frameborder="0" scrolling="no"></iframe>
-      </div>
-
-
-  
-      <div id="linx">
-        Follow us on:
-           <a href="https://twitch.tv/cabletwo">👾 <b>Twitch</b></a>
-           ▪ <a href="https://twitter.com/cabletwotv">🐦 <b>Twitter</b></a>
-           ▪ <a href="https://instagram.com/cabletwo">📸 <b>Instagram</b></a>
-           ▪ <a href="https://cabletwo.net/youtube">📺 <b>Youtube</b></a>
-           ▪ <a href="https://www.youtube.com/channel/UCFrGLEjM802PNjTujlk6xmg"><b>Full Show Archive</b></a>
-       </div>
-
-    </div>
-
-  </div>
-     <div id="bottombox">
-      
-  
-    
-    <div id="carousel"></div>
-    <br>
-    <div id="footer"></div>
-</div>
-
-<div id="arrow">
-  <div id="connect">
- <img src="https://64.media.tumblr.com/9836409850a93ebff460b41b826124a8/bc86be6f46ae39dc-c8/s2048x3072/26fc7b3b9fd53a44aaded6ec851c085ecce77748.pnj" width="200">
-</div>
-</div>
-
-
-
-<audio id="hoverSound" src="http://cabletwo.net/assets/beep1.mp3?raw=true"></audio>
 <script>
-var colorItems = ['red', 'yellow', 'green', 'blue', 'purple',];
-var hoverSound = document.getElementById('hoverSound');
-
-colorItems.forEach(function(colorItem) {
-    var item = document.getElementById(colorItem);
-    item.addEventListener('mouseover', function() {
-        hoverSound.play();
-    });
-});
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
 </script>
 
+<div class="spacer"></div> <!--- horizontal spacer consistent thru page --->
+
+<div class="parent"> <!--- Home --->
+  <div class="child1">
+    <div class="headerbox">
+        
+        <img src="https://64.media.tumblr.com/8dfcea7524d7d394bdfc724ab154f43a/1ce64ee60236cf32-7f/s1280x1920/6650dec68a655d1f28acde0513b2ba20aad75b78.pnj" style="width:90%;">
+    </div>
+
+  <div class="spacer"></div>
+    
+    <div class="headerbox">
+      <p><mark>Cable Two</mark> isn't a name. It's a threat and a promise. Cable Two is a television network exploring the possibilities of live video as a medium. It's a media project, it's a collaborative community, it's a place. All you have to do to get involved is say hi. Watch us live on <a href="https://twitch.tv/cabletwo">twitch.</a>
+       
+     
+      <img src="https://cabletwo.net/home/sphere.gif" style="width:70%;"> </p>
+      
+      
+      
+    </div>
+
+
+   
+  
+  </div>
+
+  <div class="child2">
+    <div class="vidbox">
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/f-Q5_8td_pU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    
+<div class="spacer"></div>
+     
+    <div class="newsbox" style="background-image:url('https://sadhost.neocities.org/images/tiles/page_background_animated_04.gif');"> <!--- News ---> 
+
+        <h1 id="News" style="color:black;">What's new?</h1>
+          
+           <center> <p> 
+         <img src="https://64.media.tumblr.com/9ca221f88b9a7e1e879af1446f8e2083/0a093f23428e0831-fb/s1280x1920/9ac3d2cda8f84bb22704a227e9b44d685f6cd332.pnj" style="height:auto;width:50%;"><img src="https://64.media.tumblr.com/46f44bf442ac83d121e9152ff24197c5/762f0c000a2a8d52-d5/s640x960/59eaa6d1c0701b27a7358a83b17d28a824582020.pnj"style="height:auto;width:50%;"></center>
+            
+            
+             </p>
+      </div>
+    </div>
+</div>
+
+<div class="spacer"></div>
+
+<div class="parent">
+  <div class="child2">
+
+    <div class="vidbox2">
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/uynP3q-41nE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+       
+       </div>
+<div class="spacer"></div>
+
+    <div class="schedulebox"> <!--- Schedule --->
+
+      <div class="schedule">
+        <h1 id="Shows">This Week</h1>
+       <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FChicago&amp;mode=AGENDA&amp;showNav=0&amp;showDate=0&amp;showTitle=0&amp;showCalendars=0&amp;showTabs=0&amp;showPrint=0&amp;src=ZDM0OWQ4YjlhZWQ1MDVlZjQwMmMzMDc5M2ZiYjgzODFlN2MyYzM1ZGZjN2QxNzZjOGY2MjhhODk0ZWZhNDQ2MUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23D50000" style="border-width:0" width="100%" height="200" frameborder="0" scrolling="no"></iframe>
+    </div>
+  </div>
+
+<div class="spacer"></div>
+
+  <div class="schedulebox" style="background-image:url('https://web.archive.org/web/20060612123139im_/http://avmk.disney.go.com/media/vmk/en_US/home/yellow_wave.gif');background-size:cover;"> <!--- Shop --->
+    <div class="schedule">
+      <a href="https://cabletwo.bigcartel.com" alt="If You Buy Our Lifestyle Merchandise,You Will Live Forever">
+      <img src="https://64.media.tumblr.com/bffd2c223393aa7ea371f8f01c10fa96/0a093f23428e0831-ca/s1280x1920/c0c8a4dc9db5e02765c4f0a717d4a69555e54fdb.pnj" style="width:100%;position:center;"></img></a>
+
+    </div>
+  </div>
+</div>
 
 
 
+  <div class="child1">
+    <div class="newsbox"> <!--- Contact --->
+
+      <h1 id="Contact">Connect with us!</h1> 
+
+      <p>If you want to be a part of a creative community that is constantly working, learning, and growing together, you should talk to us!
+
+      <br><br><br><a href="https://discord.gg/tGdpxnK">Join our Discord!</a> This is where we communicate and hang out as a team. Come say hi!<br>
+
+      <br><br>Follow us on:</p>
+        <a href="https://twitch.tv/cabletwo">👾 Twitch</a>
+        ▪ <a href="https://twitter.com/cabletwotv">🐦 Twitter</a>
+        ▪ <a href="https://instagram.com/cabletwo">📸 Instagram</a>
+        ▪ <a href="https://cabletwo.net/youtube">📺 Youtube</a><br><br>
+        ▪ <a href="https://www.youtube.com/channel/UCFrGLEjM802PNjTujlk6xmg">Full Show Archive</a><br><br><br>
+        
+          <script async src="https://eocampaign1.com/form/52dd7384-9acb-11ed-8622-1f69b4be0305.js" data-form="52dd7384-9acb-11ed-8622-1f69b4be0305"></script>
+        
 
 
+       
+    </div>
+
+<div class="spacer"></div>
+
+
+      <div class="newsbox"> <!--- Pitch --->
+          <h1 id="Pitch">it's show time</h1>
+        
+      <div class="background">
+      <div class="form-group">
+        <p>Want to make your digital dreams real?
+        <br>Visit <a href="https://cabletwo.net/pitch">our pitch page</a> to send us your idea for a show.</p>
+        </div></div>
+    </div>
+  </div>
+</div>
+
+<p>
+
+<center><div id="footdivider"></div></center>
+
+
+<div align="CENTER" style="font-family:verdana, arial, helvetica, sans-serif;">
+	<font face="verdana, arial, helvetica, sans-serif" size="1">
+	<div align="CENTER" style="margin-top:3px; font-size:10pt;">
+	<a href="https://cabletwo.neocities.org/contact" target="_top">Guest Services</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+	<a href="https://cabletwo.neocities.org/info" target="_top"><b>About</b></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+	<a href="https://image.shutterstock.com/image-illustration/3d-business-man-texting-on-600w-73351387.jpg" target="_top">Business Stuff</a></div>
+	<div align="CENTER" style="margin-top:5px; font-size:8pt;">Use of this site signifies your agreement to the
+	<a href="https://cabletwo.neocities.org/info/tos.html" target="_top">terms of use</a>.</div>
+	<div align="CENTER" style="margin-top:3px; margin-bottom:20px; font-size:8pt;">&copy; Cable Two. No rights reserved.</div>
+	</font>
+</div>
+<br><br><br>
+<script async src="https://eocampaign1.com/form/3c51ff72-9ac6-11ed-b2d3-af646d06cc54.js" data-form="3c51ff72-9ac6-11ed-b2d3-af646d06cc54"></script>
 </body>
 </html> 
