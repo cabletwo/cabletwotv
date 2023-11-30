@@ -123,7 +123,7 @@ right:160px;
     left:-3px;
     margin: auto;
     text-align: center;
-    transform: rotate(0deg);
+    
 }
 #green {
   position:relative;
@@ -131,7 +131,7 @@ right:160px;
     left:140px;
     margin: auto;
     text-align: center;
-    transform: rotate(10deg);
+   
 }
 #blue {
   position:relative;
@@ -163,7 +163,7 @@ right:160px;
     left:10px;
     margin: auto;
     text-align: center;
-    transform: rotate(4deg);
+    
 }
 
 #logo {
@@ -210,10 +210,7 @@ right:160px;
     font-family: 'Syne Mono';
     text-align: center;}
 
-#colors div:hover{
-    transform: scale(1.1);
-    transition: transform 0.3s ease-in-out;
-}
+
 
 
   @media only screen and (max-width: 1200px) {
@@ -227,12 +224,7 @@ right:160px;
 
   }
 
-  #logo:hover {
-    transform: scale(1.1);
-}
-#enter:hover {
-    transform: scale(1.05);
-}
+
 </style>
 
 </head> 
@@ -311,18 +303,7 @@ right:160px;
 </div>
 
 
-<audio id="hoverSound" src="http://cabletwo.net/assets/beep1.mp3?raw=true"></audio>
-<script>
-var colorItems = ['red', 'yellow', 'green', 'blue', 'purple',];
-var hoverSound = document.getElementById('hoverSound');
 
-colorItems.forEach(function(colorItem) {
-    var item = document.getElementById(colorItem);
-    item.addEventListener('mouseover', function() {
-        hoverSound.play();
-    });
-});
-</script>
 
 
 
