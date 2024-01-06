@@ -1,0 +1,294 @@
+
+<div id="container">
+    <div id="headerArea">
+        
+        
+    </div>
+
+    <div id="flex">
+        
+        <main>
+            <h1>Solitaire</h1>
+            <p><strong>Coming Attractions</strong></p>
+            <p>Content warning: Suicide mention, body horror and abstracted gore, satanic cult imagery, conspiracy to murder, multiple instances of harassment, and skiing accidents.
+            As always, I have to note that any list cannot accurately describe how elements work in context! This is a fun little show.
+            </p><p>
+            The majority of this episode is abstracted enough to make it difficult to define while still allowing it to remain open.
+            This is a story that utilizes conspiracy theories, based on baseless accounts of mind control.
+            It's an extension of the real life underlying fears and dynamics that perpetuate moral panics. It's about other things.
+            </p>Know your limits and take care. 
+              
+            <p>
+                Watch Solitaire here: <a href="https://youtu.be/PF4AFOrCpGA">Cable Two Youtube</a><br>
+                Visit our main page: <a href="https://cabletwo.net">it's cable two</a>
+            </p>
+
+        </main>
+        
+    </div>
+    
+</div>
+<!-- THIS IS THE CSS !-->
+<style>
+    /* user styles */
+
+    /* styles are what change the color and sizes of stuff on your site. */
+
+    /* these are variables that are being used in the code
+these tended to confuse some people, so I only kept 
+the images as variables */
+
+    :root {
+        --header-image: url('https://sadhost.neocities.org/images/layouts/wp.jpeg');
+
+        /* colors */
+        --content: black;
+    }
+
+    /* if you have the URL of a font, you can set it below */
+    /* feel free to delete this if it's not your vibe */
+
+    /* this seems like a lot for just one font and I would have to agree 
+but I wanted to include an example of how to include a custom font.
+If you download a font file you can upload it onto your Neocities
+and then link it! Many fonts have separate files for each style
+(bold, italic, etc. T_T) which is why there are so many!
+
+*/
+
+    @font-face {
+        font-family: Nunito;
+        src: url('https://sadhost.neocities.org/fonts/Nunito-Regular.ttf');
+    }
+
+    @font-face {
+        font-family: Nunito;
+        src: url('https://sadhost.neocities.org/fonts/Nunito-Bold.ttf');
+        font-weight: bold;
+    }
+
+    @font-face {
+        font-family: Nunito;
+        src: url('https://sadhost.neocities.org/fonts/Nunito-Italic.ttf');
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: Nunito;
+        src: url('https://sadhost.neocities.org/fonts/Nunito-BoldItalic.ttf');
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        margin: 0;
+        background-color: #151f18;
+        /* you can delete the line below if you'd prefer to not use an image */
+        background-size: 65px;
+        color: #fceaff;
+        background-image: var(--body-bg-image);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* below this line is CSS for the layout */
+
+    /* this is a CSS comment
+to uncomment a line of CSS, remove the * and the /
+before and after the text */
+
+
+    /* the "container" is what wraps your entire website */
+    /* if you want something (like the header) to be Wider than
+the other elements, you will need to move that div outside
+of the container */
+    #container {
+        max-width: 900px;
+        /* this is the width of your layout! */
+        /* if you change the above value, scroll to the bottom
+and change the media query according to the comment! */
+        margin: 0 auto;
+        /* this centers the entire page */
+    }
+
+    /* the area below is for all links on your page
+EXCEPT for the navigation */
+    #container a {
+        color: lightblue;
+        font-weight: bold;
+        /* if you want to remove the underline
+you can add a line below here that says:
+text-decoration:none; */
+    }
+
+    #header {
+        width: 100%;
+        background-color: black;
+        /* header color here! */
+        height: 150px;
+        /* this is only for a background image! */
+        /* if you want to put images IN the header, 
+you can add them directly to the <div id="header"></div> element! */
+        background-image: var(--header-image);
+        background-size: 100%;
+    }
+
+    /* navigation section!! */
+    #navbar {
+        height: 40px;
+        background-color: #13092D;
+        /* navbar color */
+        width: 100%;
+    }
+
+    #navbar ul {
+        display: flex;
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+        justify-content: space-evenly;
+    }
+
+    #navbar li {
+        padding-top: 10px;
+    }
+
+    /* navigation links*/
+    #navbar li a {
+        color: #ED64F5;
+        /* navbar text color */
+        font-weight: 800;
+        text-decoration: none;
+        /* this removes the underline */
+    }
+
+    /* navigation link when a link is hovered over */
+    #navbar li a:hover {
+        color: #a49cba;
+        text-decoration: underline;
+    }
+
+    #flex {
+        display: flex;
+    }
+
+    /* this colors BOTH sidebars
+if you want to style them separately,
+create styles for #leftSidebar and #rightSidebar */
+    aside {
+        background-color: #151f18;
+        width: 200px;
+        padding: 20px;
+        font-size: smaller;
+        /* this makes the sidebar text slightly smaller */
+    }
+
+
+    /* this is the color of the main content area,
+between the sidebars! */
+    main {
+        background-color: #151f18;
+        flex: 1;
+        padding: 20px;
+        order: 2;
+    }
+
+    /* what's this "order" stuff about??
+allow me to explain!
+if you're using both sidebars, the "order" value
+tells the CSS the order in which to display them.
+left sidebar is 1, content is 2, and right sidebar is 3! */
+
+    */ #leftSidebar {
+        order: 1;
+    }
+
+    #rightSidebar {
+        order: 3;
+    }
+
+    footer {
+        background-color: #13092D;
+        /* background color for footer */
+        width: 100%;
+        height: 40px;
+        padding: 10px;
+        text-align: center;
+        /* this centers the footer text */
+    }
+
+    h1,
+    h2,
+    h3 {
+        color: rgb(212, 120, 120);
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+
+    strong {
+        /* this styles bold text */
+        color: rgb(212, 120, 120);
+    }
+
+    /* this is just a cool box, it's the darker colored one */
+    .box {
+        background-color: darkolivegreen;
+        border: 1px solid #ED64F5;
+        padding: 10px;
+    }
+
+    /* CSS for extras */
+
+    #topBar {
+        width: 100%;
+        height: 30px;
+        padding: 10px;
+        font-size: smaller;
+        background-color: black;
+    }
+
+
+    /* BELOW THIS POINT IS MEDIA QUERY */
+
+    /* so you wanna change the width of your page? 
+by default, the container width is 900px.
+in order to keep things responsive, take your new height,
+and then subtrack it by 100. use this new number as the 
+"max-width" value below
+*/
+
+    @media only screen and (max-width: 800px) {
+        #flex {
+            flex-wrap: wrap;
+        }
+
+        aside {
+            width: 100%;
+        }
+
+        /* the order of the items is adjusted here for responsiveness!
+since the sidebars would be too small on a mobile device.
+feel free to play around with the order!
+*/
+        main {
+            order: 1;
+        }
+
+        #leftSidebar {
+            order: 2;
+        }
+
+        #rightSidebar {
+            order: 3;
+        }
+
+        #navbar ul {
+            flex-wrap: wrap;
+        }
+    }
+</style>
