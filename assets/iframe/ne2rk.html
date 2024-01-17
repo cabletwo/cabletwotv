@@ -1,27 +1,22 @@
+
+
+
 <!DOCTYPE html>
 <html>
-  <head>
-  <title>It's Cable Two</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>It's Cable Two</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<meta charset="utf-8"/>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-			  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-			  crossorigin="anonymous"></script>
-<!-- if you changed your file name be sure to change it here below -->
-    <script src="/load.js"></script> 
-<style>
- html {
-        height: 100%;
-        width: 100%;
-        color: white;
-        font-size: 12px;
-        background-color: indigo;
-        background-size:1000px;
-        overflow: hidden;
-        background-image: url("https://64.media.tumblr.com/83e56a578857aa63c39139aa04df2a19/99e4b6c0b569a0ac-af/s1280x1920/2ce4ead450a25eee754b2b58b5edbce1986841f1.png"),
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,400&display=swap">
+        <title>endcard</title>
+        <style>
+            body {
+                margin: 0 auto;
+                background-color:indigo;
+                   background-image: url("https://64.media.tumblr.com/83e56a578857aa63c39139aa04df2a19/99e4b6c0b569a0ac-af/s1280x1920/2ce4ead450a25eee754b2b58b5edbce1986841f1.png"),
           url("https://64.media.tumblr.com/1e523e99c1cf890ad98bfdf154a09016/108741611468b0c6-ba/s640x960/1953176ecdeb78abfa17c5066f76c3b7512707d7.png"),
           url(""),
           url("https://64.media.tumblr.com/1e523e99c1cf890ad98bfdf154a09016/108741611468b0c6-ba/s640x960/1953176ecdeb78abfa17c5066f76c3b7512707d7.png"),
@@ -46,40 +41,197 @@
           background-position: -5000px 20%, -800px 95%, 500px 50%, 1000px 100%,
             400px 0, -5000px 20%, -800px 40%, 500px 50%, 1000px 100%, 400px 0;
         }
-      }
-    </style>
+            }
 
-  
-    
-   
-  
-  </head>
-  <body>
-  
+            #tv {
+                height: 100vh;
+                width: 100%;
+                background-color: transparent;
+                background-size: cover;
+                position: relative;
+                overflow: hidden;
+                margin: 0 auto;
+                z-index: -2;
+                
+            }
+             #tv2 {
+                height:100vh;
+                width: 100vw;
+               position: absolute;
+               background-size:cover;
 
-    <div class="stage">
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-    </div>
+                overflow:hidden;
+                 z-index: -2;
+                  
+            }
+            #tv3 {
+                height:414px;
+                width: 950px;
+                background-image:url('https://64.media.tumblr.com/e4e21b4620fbda1ca0c8c418db69d622/22eaae63a36bebf7-7b/s1280x1920/819e0bb5cf413ca8f803d566cd2d17cea973e5ae.pnj');
+               position: absolute;
+               background-size:cover;
+                right:60px;
+                top:77px;
+                overflow:hidden;
+                 z-index: 2;
+                  background-repeat:none;
+                  
+              }
 
- 
-</body>
-</html> 
+            @keyframes marquee {
+                from {
+                    transform: translateX(150%);
+                }
+
+                to {
+                    transform: translateX(-100%);
+                }
+            }
+
+          
+            }
+
+            .boxys {
+                width: 100%;
+                height: 40px;
+      
+                color: white;
+                font-family: 'Syne Mono';
+                padding: 5px;
+                box-shadow: 0px 0px 5px darkblue;
+                border-radius: 0px 7px 7px 0px;
+                text-align: left;
+                text-shadow: 1px 1px 3px darkblue;
+                line-height: 40px;
+                font-size: 30px;
+                  z-index: 1;
+            }
+
+            .item-1,
+            .item-2,
+            .item-3 {
+               position: absolute;
+                display: block;
+margin: 0 auto;
+top: 50%;
+  transform: translateY(-50%);
+                color: white;
+                width: 60%;
+                text-shadow: 0px 0px 10px darkblue;
+                font-size: 30px;
+                font-family: 'Syne Mono';
+                animation-duration: 45s;
+                animation-timing-function: ease-in-out;
+                animation-iteration-count: infinite;
+                z-index: -1;
+            
+            }
+
+            .item-1 {
+                animation-name: anim-1;
+            }
+
+            .item-2 {
+                animation-name: anim-2;
+            }
+
+            .item-3 {
+                animation-name: anim-3;
+            }
+
+            @keyframes anim-1 {
+
+                0%,
+                8.3% {
+                    left: -100%;
+                    opacity: 0;
+                }
+
+                8.3%,
+                25% {
+                    left: 19%;
+                    opacity: 1;
+                }
+
+                33.33%,
+                100% {
+                    left: 110%;
+                    opacity: 0;
+                }
+            }
+
+            @keyframes anim-2 {
+
+                0%,
+                33.33% {
+                    left: -100%;
+                    opacity: 0;
+                }
+
+                41.63%,
+                58.29% {
+                    left: 19%;
+                    opacity: 1;
+                }
+
+                66.66%,
+                100% {
+                    left: 110%;
+                    opacity: 0;
+                }
+            }
+
+            @keyframes anim-3 {
+
+                0%,
+                66.66% {
+                    left: -100%;
+                    opacity: 0;
+                }
+
+                74.96%,
+                91.62% {
+                    left: 19%;
+                    opacity: 1;
+                }
+
+                100% {
+                    left: 110%;
+                    opacity: 0;
+                }
+            }
+
+           
+        </style>
+    </head>
+    <body>
+        
+         
+        <div id="tv">
+        <div id="tv2">
+            <p class="item-1">
+                <b>Welcome to The NeTWOrk!</b>
+                <br> A network made by people like you, working together to explore the possibilities of live video as a medium. <br>
+                <br> Want to join? All you have to do is say "hi." Visit cabletwo.net to learn more.
+            </p>
+            <p class="item-2">
+                oooo
+            </p>
+            <p class="item-3">
+                <b>Want to pitch a show to Cable Two?</b>
+                <br> Anyone can do it in three easy steps: <br>
+                <b>1. Visit cabletwo.net/pitch <br> 2. Fill out the form <br> 3. Wait for a response <br>
+                </b> Join our discord! Once your show is approved, <br> Pick a date and time and you're good to go. <br> cable two is 4 u
+            </p></div>
+           
+           
+           
+           
+          
+            
+             
+        <audio autoplay loop hidden id="Vmk" source src="https://ia802804.us.archive.org/26/items/weatherscancompletecollection/07%20Smooth%20Sailing.mp3">
+            <source src="https://dl.dropbox.com/s/ukebkknmh112qqa/Weatherscan-Track-25.ogg" /> Your browser does not support the <code>audio</code> element.
+        </audio>
+    </body>
+</html>
