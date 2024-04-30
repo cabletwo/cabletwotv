@@ -1,0 +1,7 @@
+bitmovin_demo.txt
+
+https://streams.bitmovin.com/cme4a5bammi5alv2ilk0/manifest.m3u8
+
+https://streams.bitmovin.com/cmbf4nfgnfcht63mpov0/manifest.m3u8
+
+https://streams.bitmovin.com/cme4d60piu7i292cnbmg/manifest.m3u8
