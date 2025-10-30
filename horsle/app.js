@@ -31,8 +31,6 @@ const dictionaryRequest = fetch("/dictionary.txt").then((r) => r.text());
 const board = $(".board");
 const keyboard = $(".keyboard");
 
-window.onload = () => init().catch((e) => console.error(e));
-
 async function init() {
   const board = generateBoard();
   const kb = generateKeyboard();
@@ -42,6 +40,9 @@ async function init() {
 
   await startGame({ word, kb, board, words });
 }
+
+
+window.onload = () => init().catch((e) => console.error(e));
 
 async function animate(el, name, ms) {
   el.style.animation = `${ms}ms ${name}`;
