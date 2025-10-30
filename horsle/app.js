@@ -27,7 +27,7 @@ const PRETTY_KEYS = {
 const ROUNDS = 6;
 const LENGTH = 5;
 
-const dictionaryRequest = fetch("/dictionary.txt").then((r) => r.text());
+const dictionaryRequest = fetch("/horsle/dictionary.txt").then((r) => r.text());
 const board = $(".board");
 const keyboard = $(".keyboard");
 
