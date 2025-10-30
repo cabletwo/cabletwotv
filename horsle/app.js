@@ -195,14 +195,3 @@ function generateKeyboard() {
     },
   };
 }
-
-async function init() {
-  const board = new Board($(".board"));
-  const kb = new Keyboard($(".keyboard"));
-  // In the real app, you would load the word list from a file
-  const words = ['horse', 'house', 'hatch']; 
-  const word = 'HORSE';
-  await startGame({ word, kb, board, words });
-}
-
-init();
