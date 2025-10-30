@@ -1,0 +1,143 @@
+*,
+*:before,
+*:after {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+header {
+  text-align: center;
+}
+.app {
+  display: grid;
+  height: 100vh;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center;
+  text-align: center;
+}
+.board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  gap: 0.5rem;
+}
+.round {
+  display: flex;
+  gap: 0.5rem;
+}
+.letter {
+  font-size: 2rem;
+  border: 1px solid #888;
+  display: flex;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+.letter--hint-correct {
+  background: #8d8;
+}
+.letter--hint-wrong {
+  background: #888;
+}
+.letter--hint-close {
+  background: #cc4;
+}
+.feedback {
+  white-space: pre-wrap;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.keyboard__row {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+}
+.key {
+  font: inherit;
+  padding: 0;
+  display: block;
+  width: 2rem;
+  height: 2.25rem;
+  background: #eee;
+  border-radius: 0.25rem;
+  border: 1px solid #888;
+  color: #000;
+  font-size: 1rem;
+}
+.key:hover {
+  box-shadow: 0 0 0 0.1rem currentColor;
+  cursor: pointer;
+}
+
+.key--pretty {
+  width: 3rem;
+  font-size: 0.7rem;
+  margin: 0 0.5rem;
+}
+
+.key--hint-correct {
+  background: #8d8;
+}
+.key--hint-wrong {
+  background: #888;
+}
+.key--hint-close {
+  background: #cc4;
+}
+
+
+@keyframes shake {
+  8% {
+    transform: translateX(6%);
+  }
+  16% {
+    transform: translateX(-6%);
+  }
+  24% {
+    transform: translateX(5%);
+  }
+  32% {
+    transform: translateX(-5%);
+  }
+  40% {
+    transform: translateX(4%);
+  }
+  48% {
+    transform: translateX(-4%);
+  }
+  56% {
+    transform: translateX(3%);
+  }
+  64% {
+    transform: translateX(-3%);
+  }
+  72% {
+    transform: translateX(2%);
+  }
+  80% {
+    transform: translateX(-2%);
+  }
+  88% {
+    transform: translateX(1%);
+  }
+  96% {
+    transform: translateX(-1%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
