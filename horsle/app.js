@@ -50,31 +50,6 @@ async function animate(el, name, ms) {
 }
 
 async function startGame({ word, kb, board, words }) {
-  let guesses = [];
-  const solution = word.split("");
-  let round = 0;
-  for (round = 0; round < ROUNDS; round++) {
-    const guess = await collectGuess({ kb, board, round, words });
-    const hints = guess.map((letter, i) => {
-      let pos = solution.indexOf(letter);
-      if (solution[i] === letter) {
-        return "correct";
-      } else if (pos > -1) {
-        return "close";
-      }
-      return "wrong";
-    });
-    board.revealHint(round, hints);
-    kb.revealHint(guess, hints);
-    if (guess.join("") === word) {
-      $(".feedback").innerText = `Nice Work!`;
-      return;
-    }
-  }
-  $(".feedback").innerText = `GAME OVER\nCorrect Answer was: ${word}`;
-}
-
-async function startGame({ word, kb, board, words }) {
   const solution = word.split("");
   for (let round = 0; round < ROUNDS; round++) {
     const guess = await collectGuess({ kb, board, round, words });
@@ -99,7 +74,7 @@ async function startGame({ word, kb, board, words }) {
 function collectGuess({ kb, board, round, words }) {
   let letters = [];
   
-  // Create references to the handler functions so they can be added and removed
+
   const keyboardClickHandler = (key) => keyHandler(key);
   const keyDownHandler = (e) => {
     const key = e.key;
