@@ -50,13 +50,16 @@ async function animate(el, name, ms) {
 }
 
 async function startGame({ word, kb, board, words }) {
+  let guesses = [];
   const solution = word.split("");
-  for (let round = 0; round < ROUNDS; round++) {
+  let round = 0;
+  for (round = 0; round < ROUNDS; round++) {
     const guess = await collectGuess({ kb, board, round, words });
     const hints = guess.map((letter, i) => {
+      let pos = solution.indexOf(letter);
       if (solution[i] === letter) {
         return "correct";
-      } else if (solution.includes(letter)) {
+      } else if (pos > -1) {
         return "close";
       }
       return "wrong";
@@ -72,56 +75,51 @@ async function startGame({ word, kb, board, words }) {
 }
 
 function collectGuess({ kb, board, round, words }) {
-  let letters = [];
-  
-
-  const keyboardClickHandler = (key) => keyHandler(key);
-  const keyDownHandler = (e) => {
-    const key = e.key;
-    if (key === 'Enter') {
-      keyHandler('+');
-    } else if (key === 'Backspace') {
-      keyHandler('-');
-    } else if (key.length === 1 && key.match(/[a-zA-Z]/)) {
-      keyHandler(key.toUpperCase());
-    }
-  };
-
-  const cleanup = () => {
-    kb.off(keyboardClickHandler);
-    document.removeEventListener('keydown', keyDownHandler);
-  };
-  
   return new Promise((submit) => {
-    const keyHandler = async (key) => {
-      if (key === "+") { // Submit guess
-        if (letters.length === LENGTH) {
-          const guessIsValid = words.includes(letters.join("").toLowerCase());
+    let letters = [];
+    async function keyHandler(key) 
+    
+    {
+      if (key === "+") {
+        if (letters.length === 5) {
+          const guessIsValid = words.includes(letters.join(""));
           if (!guessIsValid) {
             $(".feedback").innerText = "Invalid Word";
             await animate($$(".round")[round], "shake", 800);
-            $(".feedback").innerText = ""; // Clear feedback after shake
           } else {
-            cleanup();
+            $(".feedback").innerText = "";
+            kb.off(keyHandler);
+            document.removeEventListener('keydown', keyDownHandler);
             submit(letters);
           }
+         
+          function keyDownHandler(e) {
+			const key = e.key.toLowerCase();
+
+			if (key === 'enter') { keyHandler('+') }
+			if (key === 'backspace') { keyHandler('-') }
+
+			if (KEYS.some(k => k.includes(key.toUpperCase()))) {
+				keyHandler(key.toUpperCase());
+			}
+		}
+
+		document.addEventListener('keydown', keyDownHandler);
+          
         }
-      } else if (key === "-") { // Delete letter
+      } else if (key === "-") {
         if (letters.length > 0) {
           letters.pop();
         }
         board.updateGuess(round, letters);
-      } else { // Add letter
-        if (letters.length < LENGTH) {
+      } else {
+        if (letters.length < 5) {
           letters.push(key);
         }
         board.updateGuess(round, letters);
       }
-    };
-    
-    // Register the handlers once at the start of the round
-    kb.on(keyboardClickHandler);
-    document.addEventListener('keydown', keyDownHandler);
+    }
+    kb.on(keyHandler);
   });
 }
 
@@ -197,3 +195,14 @@ function generateKeyboard() {
     },
   };
 }
+
+async function init() {
+  const board = new Board($(".board"));
+  const kb = new Keyboard($(".keyboard"));
+  // In the real app, you would load the word list from a file
+  const words = ['horse', 'house', 'hatch']; 
+  const word = 'HORSE';
+  await startGame({ word, kb, board, words });
+}
+
+init();
