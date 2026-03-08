@@ -221,7 +221,7 @@ function generateKeyboard() {
 function addtoshare(hints) {
   var line = "";
   for (let index = 0; index < hints.length; index++) {
-    hint = hints[index];
+    var hint = hints[index];
     if (hint === "correct") {
       line = line + '🟩';
     } else if (hint === "close") {
@@ -240,7 +240,7 @@ function copytoshare(text) {
   navigator.clipboard.writeText(text);
   var button = document.getElementById("copybutton");
   button.innerText = `Copied!`;
-  //disable button
+	//still works after copying, but text won't change
 }
 
 function formatDate(date){
