@@ -118,19 +118,16 @@ function collectGuess({ kb, board, round, words }) {
           function keyDownHandler(e) {
             const key = e.key.toLowerCase();
 
-            if (key === "enter") {
-              keyHandler("+");
-            }
-            if (key === "backspace") {
-              keyHandler("-");
-            }
+			if (key === 'enter') { keyHandler('+') }
+			if (key === 'backspace') { keyHandler('-') }
 
-            if (KEYS.some(k => k.includes(key.toUpperCase()))) {
-              keyHandler(key.toUpperCase());
-            }
-          }
+			if (KEYS.some(k => k.includes(key.toUpperCase()))) {
+				keyHandler(key.toUpperCase());
+			}
+		}
 
-          document.addEventListener('keydown', keyDownHandler);
+		document.addEventListener('keydown', keyDownHandler);
+          
         }
       } else if (key === "-") {
         if (letters.length > 0) {
@@ -222,7 +219,7 @@ function generateKeyboard() {
 }
 
 function addtoshare(hints) {
-  line = "";
+  var line = "";
   for (let index = 0; index < hints.length; index++) {
     hint = hints[index];
     if (hint === "correct") {
