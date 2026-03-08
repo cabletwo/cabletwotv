@@ -1,6 +1,7 @@
 const $ = (s, e = document.body) => e.querySelector(s);
 const $$ = (s, e = document.body) => [...e.querySelectorAll(s)];
 const wait = (ms) => new Promise((done) => setTimeout(done, ms));
+var sharecopy = "init";
 
 const dom = (tag, attrs, ...children) => {
   const el = document.createElement(tag);
@@ -21,13 +22,15 @@ const dom = (tag, attrs, ...children) => {
 const KEYS = ["QWERTYUIOP", "ASDFGHJKL", "+ZXCVBNM-"];
 const PRETTY_KEYS = {
   "+": "Enter",
-  "-": "Del",
+  "-": "Del"
 };
 
 const ROUNDS = 6;
 const LENGTH = 5;
 
-const dictionaryRequest = fetch("/horsle/dictionary.txt").then((r) => r.text());
+const dictionaryRequest = fetch(
+  "https://cabletwo.net/horsle/dictionary.txt"
+).then((r) => r.text());
 const board = $(".board");
 const keyboard = $(".keyboard");
 
@@ -38,7 +41,7 @@ async function init() {
   const kb = generateKeyboard();
 
   const words = (await dictionaryRequest).split("\n");
-  const word = 'HORSE';
+  const word = "HORSE";
 
   await startGame({ word, kb, board, words });
 }
@@ -52,6 +55,14 @@ async function animate(el, name, ms) {
 async function startGame({ word, kb, board, words }) {
   let guesses = [];
   const solution = word.split("");
+  //get date, make string
+  let today = Date(Date.now());
+  let todayShort = formatDate(today);
+  //meake header for share data
+  sharecopy = 
+      '🐴 Horsle 🐴\n' + 
+      todayShort + '\n';
+  //start of game
   let round = 0;
   for (round = 0; round < ROUNDS; round++) {
     const guess = await collectGuess({ kb, board, round, words });
@@ -64,22 +75,33 @@ async function startGame({ word, kb, board, words }) {
       }
       return "wrong";
     });
+    sharecopy = sharecopy + addtoshare(hints);
     board.revealHint(round, hints);
     kb.revealHint(guess, hints);
     if (guess.join("") === word) {
-      $(".feedback").innerText = `Nice Work!`;
+      sharecopy = sharecopy + "https://cabletwo.net/horsle"
+      $(".feedback").innerHTML = `
+        <div id="response">Nice Work!</div>
+        <div><button type="button" class="button--share" id="copybutton" onclick="copytoshare(sharecopy)">Copy results</button></div>
+        <textarea cols="50" id="sharebox"></textarea>
+        `;
+      updateSharebox(sharecopy);
       return;
     }
   }
-  $(".feedback").innerText = `GAME OVER\nCorrect Answer was: ${word}`;
+  sharecopy = sharecopy + "https://cabletwo.net/horsle"
+  $(".feedback").innerHTML = `
+  <div>GAME OVER<br>Correct Answer was: ${word}</div>
+  <div><button type="button" class="button--share" id="copybutton" onclick="copytoshare(sharecopy)">Copy results</button></div>
+  <textarea cols="50" id="sharebox"></textarea>
+        `;
+  updateSharebox(sharecopy);
 }
 
 function collectGuess({ kb, board, round, words }) {
   return new Promise((submit) => {
     let letters = [];
-    async function keyHandler(key) 
-    
-    {
+    async function keyHandler(key) {
       if (key === "+") {
         if (letters.length === 5) {
           const guessIsValid = words.includes(letters.join(""));
@@ -89,23 +111,26 @@ function collectGuess({ kb, board, round, words }) {
           } else {
             $(".feedback").innerText = "";
             kb.off(keyHandler);
-            document.removeEventListener('keydown', keyDownHandler);
+            document.removeEventListener("keydown", keyDownHandler);
             submit(letters);
           }
-         
+
           function keyDownHandler(e) {
-			const key = e.key.toLowerCase();
+            const key = e.key.toLowerCase();
 
-			if (key === 'enter') { keyHandler('+') }
-			if (key === 'backspace') { keyHandler('-') }
+            if (key === "enter") {
+              keyHandler("+");
+            }
+            if (key === "backspace") {
+              keyHandler("-");
+            }
 
-			if (KEYS.some(k => k.includes(key.toUpperCase()))) {
-				keyHandler(key.toUpperCase());
-			}
-		}
+            if (KEYS.some((k) => k.includes(key.toUpperCase()))) {
+              keyHandler(key.toUpperCase());
+            }
+          }
 
-		document.addEventListener('keydown', keyDownHandler);
-          
+          document.addEventListener("keydown", keyDownHandler);
         }
       } else if (key === "-") {
         if (letters.length > 0) {
@@ -128,13 +153,13 @@ function generateBoard() {
   for (let i = 0; i < ROUNDS; i++) {
     const row = dom("div", {
       class: "round",
-      "data-round": i,
+      "data-round": i
     });
     for (let j = 0; j < LENGTH; j++) {
       row.append(
         dom("div", {
           class: "letter",
-          "data-pos": j,
+          "data-pos": j
         })
       );
     }
@@ -152,7 +177,7 @@ function generateBoard() {
           blanks[i].classList.add("letter--hint-" + hint);
         }
       });
-    },
+    }
   };
 }
 
@@ -162,14 +187,14 @@ function generateKeyboard() {
       dom(
         "div",
         {
-          class: "keyboard__row",
+          class: "keyboard__row"
         },
         row.split("").map((key) =>
           dom(
             "button",
             {
               class: `key${PRETTY_KEYS[key] ? " key--pretty" : ""}`,
-              "data-key": key,
+              "data-key": key
             },
             PRETTY_KEYS[key] || key
           )
@@ -192,6 +217,49 @@ function generateKeyboard() {
       hints.forEach((hint, i) => {
         $(`[data-key="${guess[i]}"]`).classList.add("key--hint-" + hint);
       });
-    },
+    }
   };
+}
+
+function addtoshare(hints) {
+  line = "";
+  for (let index = 0; index < hints.length; index++) {
+    hint = hints[index];
+    if (hint === "correct") {
+      line = line + '🟩';
+    } else if (hint === "close") {
+      line = line + '🟨';
+    } else if (hint === "wrong") {
+      line = line + '⬜';
+    } else {
+      console.log('Uh oh.');
+    }
+  }
+  line = line + '\n';
+  return line;
+}
+
+function copytoshare(text) {
+  navigator.clipboard.writeText(text);
+  var button = document.getElementById("copybutton");
+  button.innerText = `Copied!`;
+  //disable button
+}
+
+function formatDate(date){
+  //mmm dd yyyy --> dd mmm yyyy as string
+  var str = date.toString().substring(4,15);
+  var formatted = "";
+  var day = str.substring(4,6);
+  var month = str.substring(0,3);
+  var year = str.substring(7,11);
+  formatted = day + " " + month + " " + year;
+  return formatted;
+}
+
+function updateSharebox(text){
+  var el = document.getElementById("sharebox");
+  var x = document.createElement("textarea");
+  x.innerHTML = text;
+  el.after(x);
 }
