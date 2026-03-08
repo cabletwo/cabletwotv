@@ -219,9 +219,10 @@ function generateKeyboard() {
 }
 
 function addtoshare(hints) {
-  var line = "";
+  var line = '';
+	var hint = "";
   for (let index = 0; index < hints.length; index++) {
-    var hint = hints[index];
+    hint = hints[index];
     if (hint === "correct") {
       line = line + '🟩';
     } else if (hint === "close") {
@@ -229,7 +230,7 @@ function addtoshare(hints) {
     } else if (hint === "wrong") {
       line = line + '⬜';
     } else {
-      console.log('Uh oh.');
+      console.log("Uh oh.");
     }
   }
   line = line + '\n';
