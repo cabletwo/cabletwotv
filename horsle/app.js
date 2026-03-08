@@ -22,14 +22,14 @@ const dom = (tag, attrs, ...children) => {
 const KEYS = ["QWERTYUIOP", "ASDFGHJKL", "+ZXCVBNM-"];
 const PRETTY_KEYS = {
   "+": "Enter",
-  "-": "Del"
+  "-": "Del",
 };
 
 const ROUNDS = 6;
 const LENGTH = 5;
 
 const dictionaryRequest = fetch(
-  "https://cabletwo.net/horsle/dictionary.txt"
+  "/horsle/dictionary.txt"
 ).then((r) => r.text());
 const board = $(".board");
 const keyboard = $(".keyboard");
@@ -41,7 +41,7 @@ async function init() {
   const kb = generateKeyboard();
 
   const words = (await dictionaryRequest).split("\n");
-  const word = "HORSE";
+  const word = 'HORSE';
 
   await startGame({ word, kb, board, words });
 }
@@ -111,7 +111,7 @@ function collectGuess({ kb, board, round, words }) {
           } else {
             $(".feedback").innerText = "";
             kb.off(keyHandler);
-            document.removeEventListener("keydown", keyDownHandler);
+            document.removeEventListener('keydown', keyDownHandler);
             submit(letters);
           }
 
@@ -125,12 +125,12 @@ function collectGuess({ kb, board, round, words }) {
               keyHandler("-");
             }
 
-            if (KEYS.some((k) => k.includes(key.toUpperCase()))) {
+            if (KEYS.some(k => k.includes(key.toUpperCase()))) {
               keyHandler(key.toUpperCase());
             }
           }
 
-          document.addEventListener("keydown", keyDownHandler);
+          document.addEventListener('keydown', keyDownHandler);
         }
       } else if (key === "-") {
         if (letters.length > 0) {
@@ -153,13 +153,13 @@ function generateBoard() {
   for (let i = 0; i < ROUNDS; i++) {
     const row = dom("div", {
       class: "round",
-      "data-round": i
+      "data-round": i,
     });
     for (let j = 0; j < LENGTH; j++) {
       row.append(
         dom("div", {
           class: "letter",
-          "data-pos": j
+          "data-pos": j,
         })
       );
     }
@@ -177,7 +177,7 @@ function generateBoard() {
           blanks[i].classList.add("letter--hint-" + hint);
         }
       });
-    }
+    },
   };
 }
 
@@ -187,14 +187,14 @@ function generateKeyboard() {
       dom(
         "div",
         {
-          class: "keyboard__row"
+          class: "keyboard__row",
         },
         row.split("").map((key) =>
           dom(
             "button",
             {
               class: `key${PRETTY_KEYS[key] ? " key--pretty" : ""}`,
-              "data-key": key
+              "data-key": key,
             },
             PRETTY_KEYS[key] || key
           )
@@ -217,7 +217,7 @@ function generateKeyboard() {
       hints.forEach((hint, i) => {
         $(`[data-key="${guess[i]}"]`).classList.add("key--hint-" + hint);
       });
-    }
+    },
   };
 }
 
