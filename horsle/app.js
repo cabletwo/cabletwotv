@@ -82,9 +82,10 @@ async function startGame({ word, kb, board, words }) {
       sharecopy = sharecopy + "https://cabletwo.net/horsle"
       $(".feedback").innerHTML = `
         <div id="response">Nice Work!</div>
-        <div><button type="button" class="button--share" id="copybutton" onclick="copytoshare(sharecopy)">Copy results</button></div>
+        <div><button type="button" class="button--share" id="copybutton">Copy results</button></div>
         <textarea cols="50" id="sharebox"></textarea>
         `;
+      document.getElementById("copybutton").onclick = function() { copytoshare(sharecopy);};
       updateSharebox(sharecopy);
       return;
     }
@@ -92,9 +93,10 @@ async function startGame({ word, kb, board, words }) {
   sharecopy = sharecopy + "https://cabletwo.net/horsle"
   $(".feedback").innerHTML = `
   <div>GAME OVER<br>Correct Answer was: ${word}</div>
-  <div><button type="button" class="button--share" id="copybutton" onclick="copytoshare(sharecopy)">Copy results</button></div>
+  <div><button type="button" class="button--share" id="copybutton">Copy results</button></div>
   <textarea cols="50" id="sharebox"></textarea>
         `;
+  document.getElementById("copybutton").onclick = function() { copytoshare(sharecopy);};
   updateSharebox(sharecopy);
 }
 
