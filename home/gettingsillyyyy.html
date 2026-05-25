@@ -27,14 +27,15 @@ body {
     font-family: Arial, Helvetica, sans-serif; 
     margin: 0;
     padding: 0;
-    background-image:url('https://64.media.tumblr.com/791cc459168f763984a6035da3b0c25c/372587b2e89ad573-9a/s2048x3072/cf509a65862eb75a069dcdf9a29072a17fcc6fa8.pnj');
+    background-image: url('https://64.media.tumblr.com/791cc459168f763984a6035da3b0c25c/372587b2e89ad573-9a/s2048x3072/cf509a65862eb75a069dcdf9a29072a17fcc6fa8.pnj');
+    background-attachment: fixed; /* Keeps the background from scrolling wildly */
 }
 
 /* Main centralized container - 900px */
 .site-container {
     max-width: 900px;
     margin: 0 auto;
-    background-color: #transparent;
+    background-color: transparent;
 }
 
 /* Header Area styling */
@@ -53,24 +54,28 @@ body {
 
 /* Styling the generic modules */
 .portal-module {
+    background-color: #fff; /* Required so text is readable over the body image */
+    border: 2px solid #000; /* Restored the 2014 box borders */
     padding: 20px;
     margin-bottom: 20px;
 }
 
 /* Styling module headers */
 .portal-module h1 {
-    background-color: #000;
     color: #fff;
     font-size: 1.1rem;
     padding: 8px 12px;
     text-transform: uppercase;
     margin: -20px -20px 20px -20px; /* Forces bleed to edge */
     font-family: 'IBM Plex Mono', monospace; 
-    background-image:url('https://sadhost.neocities.org/images/tiles/black.jpg');
+    background-image: url('https://sadhost.neocities.org/images/tiles/black.jpg'); /* Your custom black tile */
 }
 
-#right-col {
-( background-image:url('https://sadhost.neocities.org/images/tiles/page_background_animated_04.gif');
+/* Right column custom background */
+.right-col {
+    background-image: url('https://sadhost.neocities.org/images/tiles/page_background_animated_04.gif');
+    padding: 10px; /* Adds a little padding so the animated gif peeks out behind the modules */
+    border: 2px solid #000;
 }
     
 /* Responsive adjustments for video content */
@@ -79,6 +84,7 @@ body {
     padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
     height: 0;
     overflow: hidden;
+    border: 1px solid #000; /* Keeps videos looking crisp in the layout */
 }
 
 .video-container iframe {
@@ -102,9 +108,10 @@ body {
 
 /* Footer styling */
 .portal-footer {
-    border-top: 1px solid #000;
+    background-color: #fff; /* Added to keep it readable over background */
+    border: 2px solid #000;
     padding: 20px;
-    margin-top: 20px;
+    margin: 20px;
     font-size: 10pt;
     text-align: center;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -122,7 +129,7 @@ body {
 
     <center>
         <a href="https://www.youtube.com/watch?v=ee9jZ04Zrqo" target="_blank">
-            <img src="https://64.media.tumblr.com/ec5486e2b351d11479fcc1cf14abefc2/5a2e1bf7bdd4f80a-63/s1280x1920/c6327d3e54a2da0ed4a14991ec69528fe13a6573.pnj" style="width:100%; max-width:900px; display: block;">
+            <img src="https://64.media.tumblr.com/ec5486e2b351d11479fcc1cf14abefc2/5a2e1bf7bdd4f80a-63/s1280x1920/c6327d3e54a2da0ed4a14991ec69528fe13a6573.pnj" style="width:100%; max-width:900px; display: block; border: 2px solid #000; margin-top: 10px;">
         </a>
     </center>
     <br>
@@ -142,7 +149,7 @@ body {
                      <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/f-Q5_8td_pU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    </div>
+                </div>
 
                 <div class="portal-module">
                     <h1>Check Out Our Old News</h1>
@@ -166,7 +173,7 @@ body {
                      <img src="https://64.media.tumblr.com/8dfcea7524d7d394bdfc724ab154f43a/1ce64ee60236cf32-7f/s1280x1920/6650dec68a655d1f28acde0513b2ba20aad75b78.pnj" style="width:100%; margin-bottom:15px;">
                     <p><mark>Cable Two</mark> isn't a name. It's a threat and a promise. Cable Two is a television network exploring the possibilities of live video as a medium. It's a media project, it's a collaborative community, it's a place. All you have to do to get involved is say hi. Watch us live on <a href="https://twitch.tv/cabletwo">twitch.</a></p>
                     <center><img src="https://cabletwo.net/home/sphere.gif" style="width:70%; border:none;"></center>
-                <center>
+                    <center>
                         <p>
                             <img src="https://64.media.tumblr.com/9ca221f88b9a7e1e879af1446f8e2083/0a093f23428e0831-fb/s1280x1920/9ac3d2cda8f84bb22704a227e9b44d685f6cd332.pnj" style="height:auto;width:50%;"><img src="https://64.media.tumblr.com/46f44bf442ac83d121e9152ff24197c5/762f0c000a2a8d52-d5/s640x960/59eaa6d1c0701b27a7358a83b17d28a824582020.pnj"style="height:auto;width:50%;">
                         </p>
