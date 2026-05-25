@@ -1,55 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-    /* Global Styles */
-    body { background-color: #F4EEDF; margin: 0; font-family: Arial, Helvetica, sans-serif; }
+    body { background-color: #F4EEDF; margin: 0; font-family: Arial, sans-serif; }
     
-    /* Layout Containers */
-    .site-wrapper { max-width: 1000px; margin: 0 auto; background: #fff; border-left: 2px solid #000; border-right: 2px solid #000; }
-    .portal-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; padding: 15px; }
+    /* The Portal Frame */
+    .container { max-width: 1000px; margin: 0 auto; background: #fff; border-left: 2px solid #000; border-right: 2px solid #000; padding: 15px; }
     
-    /* Responsive stacking */
-    @media (max-width: 768px) { .portal-grid { grid-template-columns: 1fr; } }
+    /* The 2-Column Grid */
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     
-    /* The Module Aesthetic */
-    .module { border: 2px solid #000; padding: 15px; margin-bottom: 15px; background: #fff; }
-    h1 { background: #000; color: #fff; padding: 5px 10px; font-size: 1.1rem; text-transform: uppercase; margin: -15px -15px 15px -15px; }
+    /* Module Style - The "Adult Swim" look */
+    .module { border: 2px solid #000; padding: 15px; margin-bottom: 20px; background: #fff; }
+    h1 { background: #000; color: #fff; padding: 5px 10px; font-size: 1rem; text-transform: uppercase; margin: -15px -15px 15px -15px; }
     
-    /* Responsive Video Containers */
-    .vidbox { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 1px solid #000; }
+    /* Video responsiveness */
+    .vidbox { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
     .vidbox iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-    
-    /* Footer & Header adjustments */
-    #header, .footer { text-align: center; padding: 20px; }
-    .footer { font-size: 10px; border-top: 2px solid #000; }
+
+    /* Footer */
+    .footer { text-align: center; font-size: 10px; padding: 20px; border-top: 2px solid #000; margin-top: 20px; }
 </style>
 </head>
 <body>
 
     <center><a href="https://www.youtube.com/watch?v=ee9jZ04Zrqo" target="_blank"><img src="https://64.media.tumblr.com/ec5486e2b351d11479fcc1cf14abefc2/5a2e1bf7bdd4f80a-63/s1280x1920/c6327d3e54a2da0ed4a14991ec69528fe13a6573.pnj" style="width:100%; max-width:1000px;"></a></center>
-    
-    <div class="site-wrapper">
-        <div id="header"> </div>
 
-        <div class="portal-grid">
-            <div class="left-col">
+    <div class="container">
+        <div id="header"></div>
+
+        <div class="grid">
+            <div>
                 <div class="module">
                     <h1>What's New</h1>
-                    <p>Insert news content here...</p>
+                    <p>1. Latest show streaming now.</p>
+                    <p>2. New episode at 11:30P.</p>
                 </div>
                 <div class="module">
-                    <h1>Featured Video</h1>
+                    <h1>Live Feed</h1>
                     <div class="vidbox"><iframe src="https://www.youtube.com/embed/f-Q5_8td_pU"></iframe></div>
                 </div>
             </div>
 
-            <div class="right-col">
+            <div>
                 <div class="module">
-                    <h1>Shows</h1>
-                    <iframe src="https://calendar.google.com/calendar/embed?..." style="border-width:0" width="100%" height="200" frameborder="0"></iframe>
+                    <h1>Schedule</h1>
+                    <iframe src="https://calendar.google.com/calendar/embed?..." width="100%" height="200" frameborder="0"></iframe>
                 </div>
                 <div class="module">
                     <h1>Connect</h1>
@@ -58,10 +56,10 @@
             </div>
         </div>
 
-        <div id="carousel" style="padding: 15px;"> </div>
+        <div id="carousel"></div>
 
         <div class="footer">
-            &copy; Cable Two. No rights reserved. Terms of Use.
+            &copy; Cable Two. No rights reserved.
         </div>
     </div>
 
