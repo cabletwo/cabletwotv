@@ -66,15 +66,32 @@ async function startGame({ word, kb, board, words }) {
   let round = 0;
   for (round = 0; round < ROUNDS; round++) {
     const guess = await collectGuess({ kb, board, round, words });
-    const hints = guess.map((letter, i) => {
-      let pos = solution.indexOf(letter);
-      if (solution[i] === letter) {
-        return "correct";
-      } else if (pos > -1) {
-        return "close";
-      }
-      return "wrong";
-    });
+    const hints = (guess, solution) => {
+  const remaining = solution.split('');
+  const result = new Array(guess.length).fill(null);
+
+  for (let i = 0; i < guess.length; i++) {
+    if (guess[i] === remaining[i]) {
+      result[i] = "correct";
+      remaining[i] = null;
+    }
+  }
+
+  for (let i = 0; i < guess.length; i++) {
+    if (result[i] === "correct") continue;
+
+    const letter = guess[i];
+    const pos = remaining.indexOf(letter);
+    if (pos !== -1) {
+      result[i] = "close";
+      remaining[pos] = null;
+    } else {
+      result[i] = "wrong";
+    }
+  }
+
+  return result;
+};
     sharecopy = sharecopy + addtoshare(hints);
     board.revealHint(round, hints);
     kb.revealHint(guess, hints);
