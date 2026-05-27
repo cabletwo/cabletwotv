@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>it's cable two</title>
+<script src="/load.js"></script>
+<style>
+
+/* ===== PAGE ===== */
+
+body {
+  background-color: #0d0d16;
+  color: #b6a6ff;
+  font-family: "Courier New", monospace;
+  text-align: center;
+  margin: 0;
+  padding: 40px;
+  padding-bottom: 90px;
+  line-height: 1.7;
+}
+
+.container {
+  max-width: 650px;
+  margin: auto;
+}
+
+h1 {
+  color: white;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.divider {
+  margin: 35px 0;
+  color: #3a3a5c;
+}
+
+a {
+  color: #8fffd1;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== YOUR EXACT TICKER CODE ===== */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.h-8 { height: 2rem; }
+.h-10 { height: 2.5rem; }
+.w-24 { width: 6rem; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+
+.flex-grow { flex-grow: 1; }
+.flex-shrink-0 { flex-shrink: 0; }
+
+.items-center { align-items: center; }
+.items-stretch { align-items: stretch; }
+
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+
+.relative { position: relative; }
+.absolute { position: absolute; }
+
+.z-10 { z-index: 10; }
+.-left-5 { left: -1.25rem; }
+.top-0 { top: 0; }
+
+.bg-black { background-color: #333; }
+.bg-white { background-color: #fff; }
+
+.bg-gray-200 { background-color: #e5e7eb; }
+
+.bg-opacity-40 {
+  background-color: rgba(0,0,0,0.4);
+}
+
+.text-white { color: #fff; }
+.text-black { color: #000; }
+
+.text-xs { font-size: 0.75rem; }
+
+.font-medium { font-weight: 500; }
+.font-bold { font-weight: 700; }
+
+.opacity-50 { opacity: 0.5; }
+
+.uppercase { text-transform: none; }
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.tracking-wide {
+  letter-spacing: 0.025em;
+}
+
+.mx-2 { margin: 0 0.5rem; }
+
+.px-1 { padding: 0 0.25rem; }
+
+.px-3 { padding: 0 0.75rem; }
+
+.pl-8 { padding-left: 2rem; }
+
+.border-2 { border-width: 2px; }
+
+.border-white { border-color: #fff; }
+
+.rounded-sm { border-radius: 0.125rem; }
+
+.overflow-hidden { overflow: hidden; }
+
+.max-w-full { max-width: 100%; }
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+@keyframes ticker {
+
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+
+}
+
+.film-grain::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+/* ===== ONLY CHANGE: FIXED TO BOTTOM ===== */
+
+#app {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99999;
+  background-color: transparent;
+}
+
+.username-section {
+  min-width: 90px;
+  max-width: 160px;
+  width: auto;
+}
+
+.avatar-container {
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5));
+}
+
+.avatar-icon {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transform: rotate(-12deg);
+  border: 3px solid white;
+}
+
+.ticker-item {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+#scroller {
+  animation: ticker 60s linear infinite;
+  will-change: transform;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+#ticker-container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 700px) {
+
+  body {
+    padding: 25px;
+    padding-bottom: 80px;
+  }
+
+  .username-section {
+    display: none;
+  }
+
+  .w-24 {
+    width: 4rem;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>it's cable two</h1>
+<div id="header"></div>
+<p>
+a television network<br>
+exploring the possibilities<br>
+of live video as a medium
+</p>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<p>
+Cable Two isn't a name.<br>
+It's a threat and a promise.
+</p>
+
+<p>
+it's a media project<br>
+it's a collaborative community<br>
+it's a place
+</p>
+
+<p>
+all you have to do to get involved<br>
+is say hi
+</p>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<p>
+<a href="https://twitch.tv/cabletwo">watch live</a><br>
+<a href="https://cabletwo.net/pitch">pitch a show</a><br>
+<a href="https://discord.gg/g7NfZzWQXe">join the discord</a><br>
+<a href="https://instagram.com/cabletwo">instagram</a><br>
+<a href="https://twitter.com/cabletwotv">twitter</a>
+</p>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<p>
+<strong>what's new?</strong><br>
+something is always happening
+</p>
+
+<div class="divider">✦ ✦ ✦</div>
+
+<p>
+<strong>it's show time</strong><br>
+want to make your digital dreams real?<br>
+send us your idea for a show
+</p>
+
+  <div id="carousel"></div>
+  <div id="footer"></div>
+</div>
+
+<!-- ===== YOUR EXACT TICKER HTML ===== -->
+
+<div id="app" class="w-full flex flex-col justify-end">
+
+  <div class="w-full relative h-10 flex items-stretch">
+
+    <div class="flex-shrink-0 w-24 h-full flex items-center justify-center bg-black">
+
+      <div class="h-full w-full flex items-center justify-center">
+
+        <img
+          src="https://cabletwo.net/home/sphere.gif"
+          alt="C2 Logo"
+          class="h-8 max-w-full"
+          style="margin-bottom:15px; height:80px; filter: brightness(1.1);"
+        />
+
+      </div>
+
+    </div>
+
+    <div class="flex-grow h-full relative bg-black bg-opacity-40" id="ticker-container">
+
+      <div class="h-full flex items-center relative">
+
+        <div id="scroller"></div>
+
+      </div>
+
+    </div>
+
+    <div class="flex-shrink-0 bg-white h-full flex items-center justify-center px-3 pl-8 relative username-section">
+
+      <div class="absolute -left-5 top-0 h-full z-10 avatar-container">
+
+        <div class="h-full aspect-square border-2 border-white rounded-sm overflow-hidden avatar-icon">
+
+          <img
+            src="https://cdn.bsky.app/img/avatar/plain/did:plc:ckbymy6wuguhn6pltovicir2/bafkreihz5oigpn7zzjtnolq33yofjynjlgaz2hf3rs45pof4criwx7hiwu@jpeg"
+            alt="User Avatar"
+            style="width: 100%; height: 100%; object-fit: cover;"
+          />
+
+        </div>
+
+      </div>
+
+      <div
+        id="username"
+        class="text-black font-bold text-xs uppercase tracking-wide whitespace-nowrap px-1"
+      >
+        ARBY
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ===== YOUR EXACT SCRIPT ===== -->
+
+<script>
+
+const SHEET_CSV_URL =
+'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmM1LgcheYsnOs0LACPBwWLh4kjzMWiy2SnDUQpcRYT_An9qBiKg2BtsCvxo1ecXpP9uqCBQrtenRQ/pub?gid=0&single=true&output=csv';
+
+document.addEventListener('DOMContentLoaded', function() {
+
+  const username = 'ARBY';
+
+  document.getElementById('username').textContent = username;
+
+  loadTickerItemsFromSheet();
+
+});
+
+async function loadTickerItemsFromSheet() {
+
+  try {
+
+    const res = await fetch(SHEET_CSV_URL);
+
+    const text = await res.text();
+
+    const rows = text.split('\n')
+      .map(r => r.trim())
+      .filter(r => r.length > 0);
+
+    if (!rows.length)
+      throw new Error('no rows in sheet');
+
+    initTicker(rows);
+
+  } catch (err) {
+
+    console.error('ticker sheet error:', err);
+
+    initTicker([
+      'VISIT CABLETWO.NET',
+      'WED 5PM',
+      'WARP ZONE',
+      'LATER',
+      'FANTASY FLIGHT',
+      'MUCH LATER',
+      'STAY TUNED FOR MORE ON C2'
+    ]);
+
+  }
+
+}
+
+function initTicker(tickerItems) {
+
+  const scroller = document.getElementById('scroller');
+
+  scroller.innerHTML = '';
+
+  const duplicatedItems = [...tickerItems, ...tickerItems];
+
+  duplicatedItems.forEach((item, index) => {
+
+    const span = document.createElement('span');
+
+    span.className =
+      'text-white font-medium text-xs uppercase mx-2 ticker-item';
+
+    span.textContent = item;
+
+    scroller.appendChild(span);
+
+    if (index < duplicatedItems.length - 1) {
+
+      const dot = document.createElement('span');
+
+      dot.className = 'text-white opacity-50 mx-2';
+
+      dot.textContent = '•';
+
+      scroller.appendChild(dot);
+
+    }
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
